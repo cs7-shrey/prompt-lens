@@ -1,10 +1,10 @@
-import type { Browser, Locator } from "playwright";
+import type { BrowserContext, Locator } from "playwright";
 import { humanType, type ScraperService } from "./base";
 
 export class ClaudeService implements ScraperService {
-    browser: Browser;
+    browser: BrowserContext;
 
-    constructor(browser: Browser) {
+    constructor(browser: BrowserContext) {
         this.browser = browser;
     }
 

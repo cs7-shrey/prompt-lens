@@ -1,10 +1,121 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
-  runtime = "bun"
+  runtime      = "bun"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum AISource {
+  CHATGPT
+  CLAUDE
+  PERPLEXITY
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model Competitor {
+  id   String @id @default(uuid())
+  name String
+  url  String
+
+  trackingCompanyId String
+  trackingCompany   TrackingCompany @relation(fields: [trackingCompanyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([url])
+}
+
+model TrackingCompany {
+  id   String @id @default(uuid())
+  name String
+  url  String
+
+  shortDescription String?
+  fullDescription  String?
+  industry         String?
+  keyFeatures      String[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  monitors    Monitor[]
+  competitors Competitor[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([url])
+  @@unique([userId]) // for now, only one tracking company per user
+}
+
+model Prompt {
+  id      String @id @default(uuid())
+  content String
+
+  monitorId String
+  monitor   Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  responses Response[]
+  jobs      Job[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Response {
+  id        String   @id @default(uuid())
+  content   String
+  citations String[] @default([])
+
+  aiSource AISource
+
+  promptId String
+  prompt   Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Monitor {
+  id   String @id @default(uuid())
+  name String
+
+  aiSources AISource[] @default([CHATGPT, CLAUDE, PERPLEXITY])
+  prompts   Prompt[]
+
+  trackingCompanyId String
+  trackingCompany   TrackingCompany @relation(fields: [trackingCompanyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([trackingCompanyId]) // for now, only one monitor per tracking company
+}
+
+model Job {
+  id       String   @id @default(uuid())
+  aiSource AISource
+
+  promptId String
+  prompt   Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+
+  responseId String?
+
+  status JobStatus
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([promptId])
 }

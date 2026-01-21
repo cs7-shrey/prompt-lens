@@ -15,3 +15,4 @@ const adapter = new PrismaNeon({
 const prisma = new PrismaClient({ adapter });
 
 export default prisma;
+export * from '../prisma/generated/client'; 

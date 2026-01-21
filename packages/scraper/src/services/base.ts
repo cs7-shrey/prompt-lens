@@ -1,13 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import fs from 'fs';
-import { type Page, type Browser } from 'playwright';
+import { type Page, type Browser, type BrowserContext } from 'playwright';
 // import playwright from 'playwright'; // Core Playwright
 import path from 'path';
 import playwrightExtra from 'playwright-extra'; // For stealth
 // import StealthPlugin from 'puppeteer-extra-plugin-stealth'; // Stealth plugin (works with Playwright via playwright-extra)
 
 export interface ScraperService {
-    browser: Browser
+    browser: BrowserContext
     getResponse(prompt: string): Promise<{response?: string, citations: string[]}>;
 }
 
