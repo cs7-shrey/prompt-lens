@@ -1,0 +1,24 @@
+{
+  "name": "@prompt-lens/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@prompt-lens/db": "workspace:*",
+    "@prompt-lens/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@prompt-lens/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
