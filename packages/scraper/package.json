@@ -1,7 +1,13 @@
 {
-  "name": "scraper",
+  "name": "@prompt-lens/scraper",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
   "scripts": {
     "dev": "echo 'Add dev script here'",
     "build": "echo 'Add build script here'",

@@ -117,5 +117,5 @@ model Job {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([promptId])
+  @@index([promptId, aiSource, status])
 }

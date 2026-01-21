@@ -13,6 +13,7 @@
     "@prompt-lens/auth": "workspace:*",
     "@prompt-lens/db": "workspace:*",
     "@prompt-lens/env": "workspace:*",
+    "@prompt-lens/scraper": "workspace:*",
     "better-auth": "catalog:",
     "cors": "^2.8.5",
     "dotenv": "catalog:",

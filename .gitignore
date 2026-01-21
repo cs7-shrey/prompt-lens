@@ -48,3 +48,10 @@ coverage
 .cache
 tmp
 temp
+
+# Chrome
+chrome/
+Chrome/
+
+# Temp files
+temp.*

@@ -107,13 +107,13 @@ class Executor {
             const jobs = await tx.$queryRaw<
                 { id: string; promptId: string, promptContent: string }[]
                 >`
-                SELECT id, promptId, "content" as "promptContent"
+                SELECT "Job"."id", "Job"."promptId", "Prompt"."content" as "promptContent"
                 FROM "Job" JOIN "Prompt" ON "Job"."promptId" = "Prompt"."id"
-                WHERE status = ${JobStatus.PENDING.toString()}
-                AND aiSource = ${this.aiSource.toString()}
-                ORDER BY "createdAt"
+                WHERE "Job"."status" = ${JobStatus.PENDING.toString()}
+                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                ORDER BY "Job"."createdAt"
                 LIMIT ${availableSlots}
-                FOR UPDATE SKIP LOCKED
+                FOR UPDATE OF "Job" SKIP LOCKED
             `;
             
             if (jobs.length === 0) return []
@@ -128,7 +128,7 @@ class Executor {
     }
 }
 
-export async function startScraper(maxConcurrencyPerSource: number) {
+export async function startJobExecutor(maxConcurrencyPerSource: number) {
     const { browser } = await launchRealChromeWithProfile();
     for (const [aiSource, ScraperService] of Object.entries(scraperServices)) {
         const executor = new Executor(new ScraperService(browser), aiSource as AISource, maxConcurrencyPerSource);

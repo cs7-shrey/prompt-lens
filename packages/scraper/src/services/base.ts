@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import fs from 'fs';
+import fs from 'node:fs';
 import { type Page, type Browser, type BrowserContext } from 'playwright';
 // import playwright from 'playwright'; // Core Playwright
-import path from 'path';
+import path from 'node:path';
 import playwrightExtra from 'playwright-extra'; // For stealth
 // import StealthPlugin from 'puppeteer-extra-plugin-stealth'; // Stealth plugin (works with Playwright via playwright-extra)
 
@@ -30,13 +30,13 @@ function getChromeExecutablePath() {
     throw new Error('Unsupported OS');
   }
   
-export async function launchRealChromeWithProfile({ profileDir = './Chrome', proxy = null } = {}) {
+export async function launchRealChromeWithProfile({ profileDir = './Chrome', proxy = null, headless = false } = {}) {
     const executablePath = getChromeExecutablePath();
     
     if (!fs.existsSync(executablePath)) {
       throw new Error(`Chrome not found at ${executablePath} – install Chrome or fix path`);
     }
-  
+
     const profilePath = path.resolve(profileDir);
     if (!fs.existsSync(profilePath)) {
       throw new Error(`Profile directory not found: ${profilePath}`);
@@ -59,7 +59,7 @@ export async function launchRealChromeWithProfile({ profileDir = './Chrome', pro
   
     const browser = await playwrightExtra.chromium.launchPersistentContext(profileDir, {
       executablePath,
-      headless: false, // Start false for testing; true later if stable
+      headless,
       args: launchArgs,
     });
   //   playwrightExtra.chromium.
