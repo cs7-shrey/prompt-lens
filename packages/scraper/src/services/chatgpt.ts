@@ -1,13 +1,11 @@
-import type { Browser, Page } from "playwright";
+import type { Browser } from "playwright";
 import { humanType, type ScraperService } from "./base";
 
 export class ChatGPTService implements ScraperService {
     browser: Browser;
-    page: Page;
 
-    constructor(browser: Browser, page: Page) {
+    constructor(browser: Browser) {
         this.browser = browser;
-        this.page = page;
     }
 
     async getResponse(prompt: string) {

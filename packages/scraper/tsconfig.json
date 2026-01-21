@@ -1,0 +1,6 @@
+{
+  "extends": "@prompt-lens/config/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["dom", "esnext"],
+  }
+}

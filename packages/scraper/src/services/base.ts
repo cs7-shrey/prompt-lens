@@ -8,7 +8,6 @@ import playwrightExtra from 'playwright-extra'; // For stealth
 
 export interface ScraperService {
     browser: Browser
-    page: Page;
     getResponse(prompt: string): Promise<{response?: string, citations: string[]}>;
 }
 
