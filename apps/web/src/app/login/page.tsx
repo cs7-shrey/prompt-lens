@@ -143,7 +143,13 @@ export default function LoginPage() {
             </p>
           </div>
         </motion.div>
+        <div className='absolute w-[0.1rem] right-0 h-screen flex items-center justify-center'>
+            <div className='w-full h-[60vh] bg-[#2c2e4e74]'>
+
+            </div>
+        </div>
       </div>
+
 
       {/* Right side - Spectral Data Stream Art */}
       <div className="hidden md:flex items-center justify-center bg-black relative overflow-hidden">

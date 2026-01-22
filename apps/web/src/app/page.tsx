@@ -75,6 +75,10 @@ const Hero = () => {
   return (
     <section className="relative pt-40 pb-24 px-6 overflow-hidden">
       {/* Restrained Background */}
+        <div 
+          className="absolute inset-0 opacity-[0.05]" 
+          style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }} 
+        />
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div 
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] opacity-[0.08]"

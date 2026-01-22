@@ -1,0 +1,26 @@
+{
+  "name": "@prompt-lens/analytics",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "dev": "echo 'Add dev script here'",
+    "build": "echo 'Add build script here'",
+    "test": "echo 'Add test script here'",
+    "lint": "echo 'Add lint script here'"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.18",
+    "@prompt-lens/brands": "*",
+    "@prompt-lens/config": "*",
+    "@prompt-lens/db": "*",
+    "@prompt-lens/env": "*",
+    "ai": "^6.0.45",
+    "zod": "^4.3.5"
+  }
+}

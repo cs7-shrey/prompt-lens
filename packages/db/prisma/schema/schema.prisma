@@ -22,6 +22,12 @@ enum JobStatus {
   FAILED
 }
 
+enum Sentiment {
+  positive
+  negative
+  neutral
+}
+
 model Competitor {
   id   String @id @default(uuid())
   name String
@@ -77,14 +83,18 @@ model Response {
   id        String   @id @default(uuid())
   content   String
   citations String[] @default([])
+  analysed  Boolean  @default(false)
 
   aiSource AISource
 
   promptId String
   prompt   Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
 
+  mentions Mention[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  analysedAt DateTime?
 }
 
 model Monitor {
@@ -98,6 +108,7 @@ model Monitor {
   trackingCompany   TrackingCompany @relation(fields: [trackingCompanyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
   updatedAt DateTime @updatedAt
 
   @@unique([trackingCompanyId]) // for now, only one monitor per tracking company
@@ -118,4 +129,43 @@ model Job {
   updatedAt DateTime @updatedAt
 
   @@index([promptId, aiSource, status])
+}
+
+model Brand {
+  id            String   @id @default(uuid())
+  canonicalName String
+  displayName   String
+  category      String?
+  websiteUrl    String?
+  aliases       String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mentions Mention[]
+
+  @@unique([canonicalName])
+  @@unique([displayName])
+  @@unique([websiteUrl])
+  @@index([canonicalName])
+  @@index([aliases], type: Gin)
+}
+
+model Mention {
+  id        String    @id @default(uuid())
+  position  Int
+  sentiment Sentiment
+  mentionScore Float
+
+  responseId String
+  response   Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  brandId String
+  brand   Brand  @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([responseId])
+  @@index([brandId])
 }

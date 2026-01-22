@@ -52,6 +52,8 @@ class Executor {
         this.semaphore = new Semaphore(maxConcurrency);
     }
 
+    // TODO: Add temporal periodicity for jobs
+    // Add for next day after the current day is complete
     async start() {
         while (this.running) {
             const availableSlots = this.semaphore.available();
