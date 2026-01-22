@@ -64,15 +64,37 @@ class BrandRegistry {
 
         if (existingBrand) return existingBrand;
 
-        const newBrand = await prisma.brand.create({
-            data: brand,
-        });
+        try {
+            const newBrand = await prisma.brand.create({
+                data: brand,
+            });
 
-        this.brandMap.set(newBrand.canonicalName, newBrand);
-        for (const alias of newBrand.aliases) {
-            this.aliasMap.set(alias.toLowerCase(), newBrand.canonicalName);
+            this.brandMap.set(newBrand.canonicalName, newBrand);
+            for (const alias of newBrand.aliases) {
+                this.aliasMap.set(alias.toLowerCase(), newBrand.canonicalName);
+            }
+            return newBrand;
+        } catch (error: any) {
+            console.log("ERROR WAS CAUGHT ———————————————————————————————————————————————")
+            // If unique constraint fails (another worker created it), fetch and return it
+            if (error?.code === 'P2002') {
+                const createdBrand = await prisma.brand.findUnique({
+                    where: {
+                        canonicalName: brand.canonicalName,
+                    },
+                });
+                
+                if (createdBrand) {
+                    this.brandMap.set(createdBrand.canonicalName, createdBrand);
+                    for (const alias of createdBrand.aliases) {
+                        this.aliasMap.set(alias.toLowerCase(), createdBrand.canonicalName);
+                    }
+                    return createdBrand;
+                }
+            }
+            // Re-throw if it's a different error
+            throw error;
         }
-        return newBrand;
     }
 
     async learnAlias(detectedName: string, canonicalBrandName: string) {

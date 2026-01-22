@@ -18,6 +18,7 @@
     "apps/server": {
       "name": "server",
       "dependencies": {
+        "@prompt-lens/analytics": "workspace:*",
         "@prompt-lens/auth": "workspace:*",
         "@prompt-lens/db": "workspace:*",
         "@prompt-lens/env": "workspace:*",
@@ -151,6 +152,7 @@
       "name": "@prompt-lens/scraper",
       "version": "0.0.0",
       "dependencies": {
+        "@prompt-lens/analytics": "workspace:*",
         "@prompt-lens/db": "workspace:*",
         "@prompt-lens/env": "workspace:*",
         "dotenv": "catalog:",

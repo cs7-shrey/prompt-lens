@@ -1,4 +1,4 @@
-import prisma, { Sentiment, type MentionCreateManyInput, type Response } from "@prompt-lens/db";
+import prisma, { AnalyticsStatus, Sentiment, type MentionCreateManyInput, type Response } from "@prompt-lens/db";
 import { brandRegistry } from "@prompt-lens/brands";
 import { generateText, Output } from "ai";
 import { anthropic } from '@ai-sdk/anthropic';
@@ -199,4 +199,132 @@ Return a JSON array where each object contains:
 
 If no brands are mentioned, return an empty array.`
     }
+}
+
+class Semaphore {
+    private current = 0;
+    private queue: (() => void)[] = [];
+
+    constructor(private readonly max: number) { }
+
+    async acquire() {
+        if (this.current < this.max) {
+            this.current++;
+            return;
+        }
+        await new Promise<void>(res => this.queue.push(res));
+        this.current++;
+    }
+
+    release() {
+        this.current--;
+        const next = this.queue.shift();
+        if (next) next();
+    }
+
+    available() {
+        return this.max - this.current;
+    }
+}
+
+class AnalyticsRunner {
+    private semaphore: Semaphore;
+    private running = true;
+    private analytics: Analytics;
+
+    constructor(maxConcurrency: number) {
+        this.semaphore = new Semaphore(maxConcurrency);
+        this.analytics = new Analytics();
+    }
+
+    async start() {
+        console.log("AnalyticsRunner started");
+        while (this.running) {
+            const availableSlots = this.semaphore.available();
+
+            if (availableSlots > 0) {
+                const responses = await this.fetchAndLockResponses(availableSlots);
+                for (const response of responses) {
+                    this.runAnalysis(response);
+                }
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+    }
+
+    stop() {
+        this.running = false;
+    }
+
+    private async runAnalysis(response: Response) {
+        await this.semaphore.acquire();
+
+        (async () => {
+            try {
+                console.log(`Analyzing response ${response.id}`);
+                await this.analytics.analyseResponse(response);
+
+                await prisma.response.update({
+                    where: { id: response.id },
+                    data: { 
+                        analyticsStatus: AnalyticsStatus.COMPLETED,
+                        analysedAt: new Date()
+                    },
+                });
+                console.log(`Successfully analyzed response ${response.id}`);
+            } catch (err) {
+                console.error(`Failed to analyze response ${response.id}:`, err);
+                await prisma.response.update({
+                    where: { id: response.id },
+                    data: { analyticsStatus: AnalyticsStatus.FAILED },
+                });
+            } finally {
+                this.semaphore.release();
+            }
+        })();
+    }
+
+    private async fetchAndLockResponses(availableSlots: number): Promise<Response[]> {
+        return await prisma.$transaction(async (tx) => {
+            const responses = await tx.$queryRaw<
+                { 
+                    id: string; 
+                    content: string; 
+                    citations: string[];
+                    aiSource: string;
+                    promptId: string;
+                    analyticsStatus: string;
+                    createdAt: Date;
+                    updatedAt: Date;
+                    analysedAt: Date | null;
+                }[]
+            >`
+                SELECT "id", "content", "citations", "aiSource", "promptId", "analyticsStatus", "createdAt", "updatedAt", "analysedAt"
+                FROM "Response"
+                WHERE "analyticsStatus" = ${AnalyticsStatus.PENDING.toString()}
+                ORDER BY "createdAt"
+                LIMIT ${availableSlots}
+                FOR UPDATE OF "Response" SKIP LOCKED
+            `;
+            
+            if (responses.length === 0) return []
+
+            await tx.response.updateMany({
+                where: { id: { in: responses.map(r => r.id) } },
+                data: { analyticsStatus: AnalyticsStatus.RUNNING },
+            });
+            
+            return responses as Response[];
+        }, {
+            maxWait: 5000,
+            timeout: 10000,
+        });
+    }
+}
+
+export async function startAnalyticsRunner(maxConcurrency: number = 5) {
+    const runner = new AnalyticsRunner(maxConcurrency);
+    await runner.start();
+    return runner;
 }

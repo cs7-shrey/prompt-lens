@@ -81,6 +81,7 @@ class Executor {
                     throw new Error("No response from scraper");
                 }
 
+                // Add response
                 await prisma.response.create({
                     data: {
                         content: response,

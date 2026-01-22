@@ -22,6 +22,13 @@ enum JobStatus {
   FAILED
 }
 
+enum AnalyticsStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
 enum Sentiment {
   positive
   negative
@@ -83,7 +90,7 @@ model Response {
   id        String   @id @default(uuid())
   content   String
   citations String[] @default([])
-  analysed  Boolean  @default(false)
+  analyticsStatus AnalyticsStatus @default(PENDING)
 
   aiSource AISource
 
