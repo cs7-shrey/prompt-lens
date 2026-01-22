@@ -28,26 +28,8 @@ export class Analytics {
         // such that consequent occurences are skipped for ranking but discontinous ones are counted
 
         const mentions = await this.extractMentions(response)
-        const fullResponse = await prisma.prompt.findFirstOrThrow({
-            where: {
-                id: response.promptId,
-            },
-            select:  {
-                monitor: {
-                    select: {
-                        trackingCompany: {
-                            select: {
-                                industry: true
-                            }
-                        }
-                    }
-                }
-            }
-        })
 
-        const category = fullResponse.monitor.trackingCompany.industry || ""
-
-        const mentionWithBrands = await brandRegistry.getMentionsWithBrands(mentions, category);
+        const mentionWithBrands = await brandRegistry.getMentionsWithBrands(mentions);
         const dbMentionAddObjects: MentionCreateManyInput[] = mentionWithBrands.map((mention) => {
             return {
                 position: mention.position,
@@ -287,25 +269,13 @@ class AnalyticsRunner {
 
     private async fetchAndLockResponses(availableSlots: number): Promise<Response[]> {
         return await prisma.$transaction(async (tx) => {
-            const responses = await tx.$queryRaw<
-                { 
-                    id: string; 
-                    content: string; 
-                    citations: string[];
-                    aiSource: string;
-                    promptId: string;
-                    analyticsStatus: string;
-                    createdAt: Date;
-                    updatedAt: Date;
-                    analysedAt: Date | null;
-                }[]
-            >`
-                SELECT "id", "content", "citations", "aiSource", "promptId", "analyticsStatus", "createdAt", "updatedAt", "analysedAt"
+            const responses = await tx.$queryRaw<Response[]>`
+                SELECT *
                 FROM "Response"
                 WHERE "analyticsStatus" = ${AnalyticsStatus.PENDING.toString()}
                 ORDER BY "createdAt"
                 LIMIT ${availableSlots}
-                FOR UPDATE OF "Response" SKIP LOCKED
+                FOR UPDATE SKIP LOCKED
             `;
             
             if (responses.length === 0) return []
@@ -315,10 +285,7 @@ class AnalyticsRunner {
                 data: { analyticsStatus: AnalyticsStatus.RUNNING },
             });
             
-            return responses as Response[];
-        }, {
-            maxWait: 5000,
-            timeout: 10000,
+            return responses;
         });
     }
 }
