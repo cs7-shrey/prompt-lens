@@ -56,7 +56,7 @@ model TrackingCompany {
 
   shortDescription String?
   fullDescription  String?
-  industry         String?
+  category         String?
   keyFeatures      String[]
 
   userId String

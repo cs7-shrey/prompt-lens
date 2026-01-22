@@ -10,15 +10,21 @@
     "start": "bun run dist/index.js"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.23",
+    "@ai-sdk/perplexity": "^3.0.11",
+    "@mozilla/readability": "^0.6.0",
+    "@prompt-lens/analytics": "workspace:*",
     "@prompt-lens/auth": "workspace:*",
     "@prompt-lens/db": "workspace:*",
     "@prompt-lens/env": "workspace:*",
     "@prompt-lens/scraper": "workspace:*",
-    "@prompt-lens/analytics": "workspace:*",
+    "@types/jsdom": "^27.0.0",
+    "ai": "^6.0.48",
     "better-auth": "catalog:",
     "cors": "^2.8.5",
     "dotenv": "catalog:",
     "express": "^5.1.0",
+    "jsdom": "^27.4.0",
     "zod": "catalog:"
   },
   "devDependencies": {

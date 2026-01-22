@@ -13,6 +13,7 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     GOOGLE_REDIRECT_URI: z.url(),
     ANTHROPIC_API_KEY: z.string().min(1),
+    PERPLEXITY_API_KEY: z.string().min(1),
     SCRAPING_DOG_API_KEY: z.string().min(1),
   },
   runtimeEnv: process.env,

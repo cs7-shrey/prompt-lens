@@ -380,6 +380,7 @@ class BrandEnricher {
             where: { id: primaryBrand.id }
         });
         
+        // handles updating aliases from other brands
         if (updatedBrand) {
             brandRegistry.updateCache(updatedBrand);
         }
