@@ -1,4 +1,5 @@
 "use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -13,8 +14,11 @@ import {
   Zap,
   Activity,
   ShieldCheck,
-  MousePointer2
+  MousePointer2,
+  Loader2,
+  User
 } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 // New Muted Accent Color: #575BC7
 const ACCENT = "#575BC7";
@@ -38,8 +42,9 @@ const App = () => {
  * NAVBAR
  * Ultra-thin border, reduced blur for a "sharper" feel
  */
-const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-[100] border-b border-white/[0.03] bg-[#030303]/80 backdrop-blur-md">
+const Navbar = () => {
+  const { data: session, isPending } = authClient.useSession();
+  return (<nav className="fixed top-0 left-0 right-0 z-[100] border-b border-white/[0.03] bg-[#030303]/80 backdrop-blur-md">
     <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
       <div className="flex items-center gap-2.5 group cursor-pointer">
         <div 
@@ -57,15 +62,19 @@ const Navbar = () => (
         ))}
       </div>
 
-      <div className="flex items-center gap-6">
-        <Link href="/login" className="text-[12px] font-medium text-zinc-500 hover:text-zinc-200 transition-colors">Sign in</Link>
-        <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
-          Get Access
-        </button>
-      </div>
+      {isPending ? <Loader2 className="animate-spin" /> : <div className="flex items-center gap-6">
+        <Link 
+          href={session ? "/dashboard" as any : "/login" as any} 
+          className="text-[12px] font-medium text-zinc-500 hover:text-zinc-200 transition-colors"
+        >{session ? "Dashboard" : "Sign in"}</Link>
+          {!session && <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
+            Get Access
+          </button>}
+        </div>}
     </div>
   </nav>
-);
+)
+};
 
 /**
  * HERO

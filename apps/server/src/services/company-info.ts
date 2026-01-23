@@ -2,7 +2,7 @@ import { generateText, Output } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { perplexity } from "@ai-sdk/perplexity";
 import { z } from "zod";
-import { companyDataSchema } from "@/schema/onboarding.schema";
+import { companyDataSchema, competitorSchema } from "@/schema/onboarding.schema";
 
 export const extractCompanyData = async (content: string) => {
     const prompt = `You are analyzing website content to extract key company information. Based on the content below, extract the following details:
@@ -33,13 +33,6 @@ ${content}`
     })
     return output
 }
-
-export const competitorSchema = z.object({
-    competitors: z.array(z.object({
-        websiteUrl: z.url(),
-        name: z.string(),
-    }))
-})
 
 export const getCompetitors = async (companyName: string, companyData: z.infer<typeof companyDataSchema>) => {
     const prompt = `You are a market intelligence assistant identifying direct competitors for a company.
@@ -87,11 +80,13 @@ Search for current, accurate information about competitors in this specific mark
         model: perplexity("sonar-pro"),
         prompt,
         output: Output.object({
-            schema: competitorSchema
+            schema: z.object({
+                competitors: z.array(competitorSchema)
+            })
         })
     })
     
-    return output
+    return output.competitors
 }
 
 const promptsSchema = z.object({

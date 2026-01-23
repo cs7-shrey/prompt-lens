@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTrackingCompanyAndMonitor, extractDataFromWebsite } from "../controllers/onboarding.controller";
+import { createTrackingCompanyAndMonitor, extractDataFromWebsite, isOnboardingCompleted } from "../controllers/onboarding.controller";
 import validationMiddleWare from "../middlewares/validation.middleware";
 import { createTrackingCompanyAndMonitorSchema, extractDataFromWebsiteSchema } from "../schema/onboarding.schema";
 
@@ -18,5 +18,10 @@ router.post(
     validationMiddleWare(createTrackingCompanyAndMonitorSchema),
     createTrackingCompanyAndMonitor
 );
+
+router.get(
+    "/is-completed",
+    isOnboardingCompleted
+)
 
 export default router;

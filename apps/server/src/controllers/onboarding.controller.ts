@@ -5,7 +5,7 @@ import { scrapeWebsiteContent } from "../utils/scrape";
 import { extractCompanyData, getCompetitors, getPromptsToMonitorSuggestions } from "../services/company-info";
 import prisma from "@prompt-lens/db";
 
-// authenticated but no need to 
+// authenticated but no need to get user object
 export const extractDataFromWebsite = async (req: Request, res: Response) => {
     try {
         const body = req.body as z.infer<typeof extractDataFromWebsiteSchema>;
@@ -36,8 +36,19 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
         if (!user) {
             return res.status(401).json({ message: "Unauthenticated" });
         }
+        const existingTrackingCompany = await prisma.trackingCompany.findFirst({
+            where: {
+                userId: user.id
+            }
+        })
 
-        const { company: { companyName: name, ...company }, promptsToMonitor, sourcesToMonitor } = req.body as z.infer<typeof createTrackingCompanyAndMonitorSchema>;
+        if (existingTrackingCompany) {
+            return res.status(400).json({ message: "Tracking company already exists" });
+        }
+
+        console.log(req.body);
+
+        const { company: { companyName: name, ...company }, competitors, promptsToMonitor, sourcesToMonitor } = req.body as z.infer<typeof createTrackingCompanyAndMonitorSchema>;
         const existingCompany = await prisma.trackingCompany.findUnique({
             where: {
                 url: company.websiteUrl,
@@ -59,6 +70,15 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
                     userId: user.id
                 }
             })
+            await tx.competitor.createMany({
+                data: competitors.map((competitor) => {
+                    return {
+                        name: competitor.name,
+                        url: competitor.websiteUrl,
+                        trackingCompanyId: dbTrackingCompany.id
+                    }
+                })
+            })
             const dbMonitor = await tx.monitor.create({
                 data: {
                     name: `First ${name} Monitor`,
@@ -79,6 +99,30 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
         return res.status(201).json({ 
             message: "Tracking company and monitor created successfully" 
         });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const isOnboardingCompleted = async (req: Request, res: Response) => {
+    try {
+        const user = req.user
+        if (!user) {
+            return res.status(401).json({ message: "Unauthenticated" });
+        }
+
+        const trackingCompany = await prisma.trackingCompany.findFirst({
+            where: {
+                userId: user.id
+            }
+        })
+
+        if (!trackingCompany) {
+            return res.status(404).json({ message: "Onboarding not completed" });
+        }
+
+        return res.status(200).json({ isCompleted: true });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });

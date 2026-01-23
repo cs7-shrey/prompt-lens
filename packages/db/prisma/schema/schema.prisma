@@ -69,7 +69,6 @@ model TrackingCompany {
   updatedAt DateTime @updatedAt
 
   @@unique([url])
-  @@unique([userId]) // for now, only one tracking company per user
 }
 
 model Prompt {
