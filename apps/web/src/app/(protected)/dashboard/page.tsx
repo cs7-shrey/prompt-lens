@@ -244,28 +244,32 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col border-white/30 gap-8">
+    <div className="flex flex-col border-white/30 gap-5">
       {/* Header */}
-      <div className="p-4 flex justify-between items-start border-b my-2 px-12">
+      <div className="p-3 flex justify-between items-start border-b border-white/5 px-8 pb-5">
         <div className="max-w-7xl">
-          <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-zinc-100 my-2">
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-zinc-100 my-2">
             {currentCompany.name} Dashboard
           </h1>
-          <p className="text-[14px] text-zinc-500 font-medium">
+          <p className="text-[13px] text-zinc-400 font-medium">
             Real-time visibility protocol for {currentCompany.name}
           </p>
         </div>
-        <div className="mt-2">
+        <div className="mt-1">
           <DateRangeSelector value={dateRange} onValueChange={setDateRangeOption} />
         </div>
       </div>
-      <div className="mx-8">
-        <HighLevelMetrics visibilityScore={visibilityScore.toFixed(2)} citationShare={citationShare.toFixed(2)} responsesAnalyzed={responsesAnalyzed} />
+      <div className="mx-8 mt-2">
+        <HighLevelMetrics 
+          visibilityScore={visibilityScore.toFixed(2)} 
+          citationShare={citationShare.toFixed(2)} 
+          responsesAnalyzed={responsesAnalyzed} 
+          mentionRate={mentions.length > 0 ? (currentCompanyMentions.length / mentions.length) * 100 : 0} />
       </div>
       <div className="mx-8">
         <MentionsData mentions={mentions} />
       </div>
-      <div className="mx-8">
+      <div className="mx-8 mb-8">
         <CitationsData citations={citations} />
       </div>
     </div>
