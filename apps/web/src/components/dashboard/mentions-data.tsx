@@ -2,6 +2,9 @@ import type { MentionWithBrand } from "@/types";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { TrendingUp } from "lucide-react";
 import type { Brand } from "@prompt-lens/common-types";
+import { getLogoUrl } from "@/lib/utils";
+import Image from "next/image";
+import BrandLogo from "../brand-logo";
 
 interface MentionsDataProps {
     mentions: MentionWithBrand[];
@@ -80,21 +83,31 @@ const MentionsData = ({ mentions }: MentionsDataProps) => {
                                 height={80}
                                 interval={0}
                                 tick={(props) => {
-                                    const { x, y, payload } = props;
+                                    const { x, y, payload, index } = props;
                                     const maxLength = 15;
                                     const text = String(payload.value);
                                     const truncated = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+                                    const brand = topBrands[index as number]?.brand;
+                                    const logoUrl = brand?.websiteUrl ? getLogoUrl(brand.websiteUrl).primary : null;
+                                    
                                     return (
-                                        <text
-                                            x={x}
-                                            y={Number(y) + 10}
-                                            fill="#71717a"
-                                            fontSize={11}
-                                            fontWeight={500}
-                                            textAnchor="middle"
-                                        >
-                                            {truncated}
-                                        </text>
+                                        <g>
+                                            <text
+                                                x={x}
+                                                y={Number(y) + 10}
+                                                fill="#71717a"
+                                                fontSize={11}
+                                                fontWeight={500}
+                                                textAnchor="middle"
+                                            >
+                                                {truncated}
+                                            </text>
+                                            {logoUrl && (
+                                                <foreignObject x={Number(x) - 8} y={Number(y) + 18} width={24} height={24}>
+                                                    <BrandLogo domain={brand?.websiteUrl} name={brand?.displayName} size={24} />
+                                                </foreignObject>
+                                            )}
+                                        </g>
                                     );
                                 }}
                                 axisLine={{ stroke: "rgba(255,255,255,0.05)" }}
@@ -143,12 +156,10 @@ const MentionsData = ({ mentions }: MentionsDataProps) => {
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 {/* Color indicator */}
                                 <div
-                                    className="w-2 h-2 rounded-full shrink-0"
-                                    style={{
-                                        backgroundColor: BRAND_COLORS[index % BRAND_COLORS.length],
-                                    }}
-                                />
-                                
+                                    className="rounded-sm shrink-0"
+                                >
+                                    <BrandLogo domain={item.brand.websiteUrl} name={item.brand.displayName} size={24} />
+                                </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-medium text-zinc-200 truncate">
                                         {item.brand.displayName}

@@ -1,5 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts";
 import { Link as LinkIcon } from "lucide-react";
+import { getLogoUrl } from "@/lib/utils";
+import Image from "next/image";
+import BrandLogo from "../brand-logo";
 
 interface CitationsDataProps {
     citations: string[];
@@ -54,6 +57,7 @@ const CitationsData = ({ citations }: CitationsDataProps) => {
     const chartData = topDomains.map((item) => ({
         name: item.domain,
         value: item.percentage,
+        domain: item.domain,
     })).sort((a, b) => a.value - b.value);
 
     return (
@@ -79,13 +83,12 @@ const CitationsData = ({ citations }: CitationsDataProps) => {
                             className="flex items-center justify-between px-4 py-3 hover:bg-white/2 transition-colors group"
                         >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
-                                {/* Color indicator */}
+                                {/* Logo or fallback */}
                                 <div
-                                    className="w-2 h-2 rounded-full shrink-0"
-                                    style={{
-                                        backgroundColor: DOMAIN_COLORS[index % DOMAIN_COLORS.length],
-                                    }}
-                                />
+                                    className="rounded-sm shrink-0"
+                                >
+                                    <BrandLogo domain={`https://${item.domain}`} name={item.domain} size={24} />
+                                </div>
                                 
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-medium text-zinc-200 truncate">
@@ -143,21 +146,31 @@ const CitationsData = ({ citations }: CitationsDataProps) => {
                                 height={80}
                                 interval={0}
                                 tick={(props) => {
-                                    const { x, y, payload } = props;
+                                    const { x, y, payload, index } = props;
                                     const maxLength = 15;
                                     const text = String(payload.value);
                                     const truncated = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+                                    const domain = chartData[index as number]?.domain;
+                                    const logoUrl = domain ? getLogoUrl(`https://${domain}`).primary : null;
+                                    
                                     return (
-                                        <text
-                                            x={x}
-                                            y={Number(y) + 10}
-                                            fill="#71717a"
-                                            fontSize={11}
-                                            fontWeight={500}
-                                            textAnchor="middle"
-                                        >
-                                            {truncated}
-                                        </text>
+                                        <g>
+                                            <text
+                                                x={x}
+                                                y={Number(y) + 10}
+                                                fill="#71717a"
+                                                fontSize={11}
+                                                fontWeight={500}
+                                                textAnchor="middle"
+                                            >
+                                                {truncated}
+                                            </text>
+                                            {logoUrl && (
+                                                <foreignObject x={Number(x) - 8} y={Number(y) + 18} width={24} height={24}>
+                                                    <BrandLogo domain={`https://${domain}`} name={domain} size={24} />
+                                                </foreignObject>
+                                            )}
+                                        </g>
                                     );
                                 }}
                                 axisLine={{ stroke: "rgba(255,255,255,0.05)" }}
