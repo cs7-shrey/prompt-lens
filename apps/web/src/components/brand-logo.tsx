@@ -24,7 +24,7 @@ export default function BrandLogo({ domain, name, size = 48 }: { domain?: string
   }
   
   return (
-    <div className='bg-white/10 rounded-sm p-1'>
+    <div className='bg-white/5 rounded-sm p-1'>
         <Image
           src={`https://www.google.com/s2/favicons?domain=${domain}&sz=256`}
           alt={`${name} logo`}

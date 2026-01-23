@@ -2,11 +2,10 @@
 
 import { Loader2 } from "lucide-react";
 import { useCompany } from "@/hooks/use-company";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import HighLevelMetrics from "@/components/dashboard/high-level-metrics";
 import MentionsData from "@/components/dashboard/mentions-data";
 import CitationsData from "@/components/dashboard/citations-data";
+import { DateRangeSelector } from "@/components/dashboard/date-range-selector";
 import type { Mention, Brand } from "@prompt-lens/common-types";
 import useDashboard from "@/hooks/use-dashboard";
 import useMetrics from "@/hooks/use-metrics";
@@ -227,6 +226,8 @@ export default function DashboardPage() {
     isMentionsLoading,
     isCitationsError,
     isMentionsError,
+    dateRange,
+    setDateRangeOption,
   } = useDashboard();
   const { visibilityScore, mentionScore, citationShare } = useMetrics();
 
@@ -243,35 +244,30 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030303] text-zinc-400">
-      <SidebarProvider>
-        <DashboardSidebar />
-        <SidebarInset className="bg-[#13131355]">     {/* DASHBOARD CONTENT COLOUR */}
-          <div className="flex flex-col border-white/30 gap-8">
-            {/* Header */}
-            <div className="p-4 border-b mx-8">
-              <div className="max-w-7xl">
-                <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-zinc-100 mb-2">
-                  Dashboard
-                </h1>
-                <p className="text-[14px] text-zinc-500 font-medium">
-                  Real-time visibility protocol for {currentCompany.name}
-                </p>
-              </div>
-            </div>
-            <div className="mx-8">
-              <HighLevelMetrics visibilityScore={visibilityScore.toFixed(2)} citationShare={citationShare.toFixed(2)} responsesAnalyzed={responsesAnalyzed} />
-            </div>
-            <div className="mx-8">
-              <MentionsData mentions={mentions} />
-            </div>
-            <div className="mx-8">
-              <CitationsData citations={citations} />
-            </div>
-          </div>
-
-        </SidebarInset>
-      </SidebarProvider>
+    <div className="flex flex-col border-white/30 gap-8">
+      {/* Header */}
+      <div className="p-4 flex justify-between items-start border-b my-2 px-12">
+        <div className="max-w-7xl">
+          <h1 className="text-3xl md:text-4xl font-medium tracking-tight text-zinc-100 my-2">
+            {currentCompany.name} Dashboard
+          </h1>
+          <p className="text-[14px] text-zinc-500 font-medium">
+            Real-time visibility protocol for {currentCompany.name}
+          </p>
+        </div>
+        <div className="mt-2">
+          <DateRangeSelector value={dateRange} onValueChange={setDateRangeOption} />
+        </div>
+      </div>
+      <div className="mx-8">
+        <HighLevelMetrics visibilityScore={visibilityScore.toFixed(2)} citationShare={citationShare.toFixed(2)} responsesAnalyzed={responsesAnalyzed} />
+      </div>
+      <div className="mx-8">
+        <MentionsData mentions={mentions} />
+      </div>
+      <div className="mx-8">
+        <CitationsData citations={citations} />
+      </div>
     </div>
   );
 }

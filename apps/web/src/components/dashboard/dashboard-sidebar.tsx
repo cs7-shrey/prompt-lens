@@ -20,6 +20,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { useCompanyStore } from "@/store/company-store";
+import BrandLogo from "../brand-logo";
 
 const menuItems = [
   {
@@ -53,7 +54,7 @@ export function DashboardSidebar() {
         {/* Product Logo and Name */}
         <div className="flex items-center gap-2.5">
           <div 
-            className="w-7 h-7 rounded-lg flex items-center justify-center bg-sidebar-primary text-sidebar-primary-foreground shadow-lg"
+            className="w-7 h-7 rounded-lg flex items-center justify-center shadow-lg"
           >
             <Target size={14} strokeWidth={3} />
           </div>
@@ -66,11 +67,9 @@ export function DashboardSidebar() {
         {currentCompany && (
           <div className="flex items-center gap-3 p-3 bg-sidebar-accent border border-sidebar-border rounded-lg hover:bg-white/3 transition-colors">
             <div 
-              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-sidebar-primary shadow-md"
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-md"
             >
-              <span className="text-sidebar-primary-foreground font-bold text-xs">
-                {currentCompany.name.charAt(0).toUpperCase()}
-              </span>
+              <BrandLogo domain={currentCompany.url} name={currentCompany.name} size={32} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-medium text-sidebar-foreground truncate">

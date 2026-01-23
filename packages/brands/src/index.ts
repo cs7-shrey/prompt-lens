@@ -235,7 +235,10 @@ class BrandEnricher {
                 // Fetch brands without website URLs
                 const brandsToEnrich = await prisma.brand.findMany({
                     where: {
-                        websiteUrl: null,
+                        OR: [
+                            { websiteUrl: null },
+                            { websiteUrl: "" },
+                        ],
                     },
                     take: 10, // Process in small batches
                     orderBy: {
@@ -280,11 +283,6 @@ class BrandEnricher {
                                 brandRegistry.updateCache(updatedBrand);
                             }
                         } else {
-                            // Still update to avoid retrying immediately (set to empty string)
-                            await prisma.brand.update({
-                                where: { id: brand.id },
-                                data: { websiteUrl: "" }, // Empty string means we tried but couldn't find
-                            });
                             console.log(`✗ Could not find website URL for ${brand.displayName}`);
                         }
                     } catch (error) {
