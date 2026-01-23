@@ -131,6 +131,8 @@ model Job {
 
   status JobStatus
 
+  runAfter   DateTime
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

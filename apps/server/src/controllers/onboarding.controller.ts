@@ -3,7 +3,7 @@ import { createTrackingCompanyAndMonitorSchema, extractDataFromWebsiteSchema } f
 import { z } from "zod";
 import { scrapeWebsiteContent } from "../utils/scrape";
 import { extractCompanyData, getCompetitors, getPromptsToMonitorSuggestions } from "../services/company-info";
-import prisma from "@prompt-lens/db";
+import prisma, { JobStatus, type JobCreateManyAndReturnArgs } from "@prompt-lens/db";
 
 // authenticated but no need to get user object
 export const extractDataFromWebsite = async (req: Request, res: Response) => {
@@ -86,13 +86,28 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
                     trackingCompanyId: dbTrackingCompany.id
                 }
             })
-            await tx.prompt.createMany({
+            const dbPrompts = await tx.prompt.createManyAndReturn({
                 data: promptsToMonitor.map((content: string) => {
                     return {
                         content,
                         monitorId: dbMonitor.id,
                     }
                 })
+            })
+            const createJobs: JobCreateManyAndReturnArgs["data"] = []
+            const currentTime = new Date()
+            for (const prompt of dbPrompts) {
+                for(const source of sourcesToMonitor) {
+                    createJobs.push({
+                        aiSource: source,
+                        promptId: prompt.id,
+                        status: JobStatus.PENDING,
+                        runAfter: currentTime
+                    })
+                }
+            }
+            await tx.job.createMany({
+                data: createJobs
             })
         })
 

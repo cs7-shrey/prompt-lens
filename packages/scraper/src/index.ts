@@ -91,10 +91,23 @@ class Executor {
                     }
                 })
 
-                await prisma.job.update({
+                const dbJobUpdated = await prisma.job.update({
                     where: { id: job.id },
                     data: { status: JobStatus.COMPLETED },
                 });
+
+                const date = new Date(dbJobUpdated.runAfter);
+                date.setHours(date.getHours() + 24);
+
+                // Create a job for the next day
+                await prisma.job.create({
+                    data: {
+                        promptId: dbJobUpdated.promptId,
+                        aiSource: dbJobUpdated.aiSource,
+                        status: JobStatus.PENDING,
+                        runAfter: date
+                    }
+                })
             } catch (err) {
                 await prisma.job.update({
                     where: { id: job.id },
@@ -106,20 +119,39 @@ class Executor {
         })();
     }
     private async fetchAndLockJobs(availableSlots: number) {
-        return await prisma.$transaction(async (tx) => {
-            const jobs = await tx.$queryRaw<
-                { id: string; promptId: string, promptContent: string }[]
-                >`
+        const getQuery = (jobStatus: JobStatus, extraCondition: string = '') => {
+            const whereClause = extraCondition 
+                ? `WHERE "Job"."status" = ${jobStatus.toString()}
+                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                AND "runAfter" < NOW()
+                AND ${extraCondition}`
+                : `WHERE "Job"."status" = ${jobStatus.toString()}
+                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                AND "runAfter" < NOW()`;
+            
+            return `
                 SELECT "Job"."id", "Job"."promptId", "Prompt"."content" as "promptContent"
                 FROM "Job" JOIN "Prompt" ON "Job"."promptId" = "Prompt"."id"
-                WHERE "Job"."status" = ${JobStatus.PENDING.toString()}
-                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                ${whereClause}
                 ORDER BY "Job"."createdAt"
                 LIMIT ${availableSlots}
                 FOR UPDATE OF "Job" SKIP LOCKED
             `;
+        }
+
+        return await prisma.$transaction(async (tx) => {
+            let jobs = await tx.$queryRaw<
+                { id: string; promptId: string, promptContent: string }[]
+            >`${getQuery(JobStatus.PENDING)}`;
             
-            if (jobs.length === 0) return []
+            // get failed jobs if pending jobs are ready to retry (after 1 hour)
+            if (jobs.length === 0) {
+                jobs = await tx.$queryRaw<
+                    { id: string; promptId: string, promptContent: string }[]
+                >`${getQuery(JobStatus.FAILED, `NOW() > "Job"."updatedAt" + INTERVAL '1 hour'`)}`;
+            }
+
+            if (jobs.length === 0) return [];
 
             await tx.job.updateMany({
                 where: { id: { in: jobs.map(job => job.id) } },
