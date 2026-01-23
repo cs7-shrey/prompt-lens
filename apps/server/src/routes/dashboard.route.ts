@@ -5,5 +5,5 @@ import { Router } from "express";
 
 export const router = Router();
 
-router.get("/citations", validationMiddleWare(getCitationSchema), getCitations);
-router.get("/mentions", validationMiddleWare(getMentionSchema), getAllAndRelevantMentions);
+router.post("/citations", validationMiddleWare(getCitationSchema), getCitations);
+router.post("/mentions", validationMiddleWare(getMentionSchema), getAllAndRelevantMentions);

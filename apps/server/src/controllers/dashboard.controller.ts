@@ -10,11 +10,11 @@ export const getAllAndRelevantMentions = async (req: Request, res: Response) => 
         if (!user) {
             return res.status(401).json({ message: "Unauthenticated" });
         }
-        const { companyId, startDate, endDate } = req.body as z.infer<typeof getMentionSchema>
+        const { trackingCompanyId, startDate, endDate } = req.body as z.infer<typeof getMentionSchema>
 
         const company = await prisma.trackingCompany.findUnique({
             where: {
-                id: companyId,
+                id: trackingCompanyId,
                 userId: user.id
             }
         })
@@ -27,7 +27,7 @@ export const getAllAndRelevantMentions = async (req: Request, res: Response) => 
                 response: {
                     prompt: {
                         monitor: {
-                            trackingCompanyId: companyId
+                            trackingCompanyId: trackingCompanyId
                         }
                     }
                 },

@@ -59,9 +59,13 @@ class Executor {
             const availableSlots = this.semaphore.available();
 
             if (availableSlots > 0) {
-                const jobs = await this.fetchAndLockJobs(availableSlots);
-                for (const job of jobs) {
-                    this.runJob(job);
+                try {
+                    const jobs = await this.fetchAndLockJobs(availableSlots);
+                    for (const job of jobs) {
+                        this.runJob(job);
+                    }
+                } catch (error) {
+                    console.error("Error in Executor.start:", error);
                 }
             }
 
@@ -119,14 +123,14 @@ class Executor {
         })();
     }
     private async fetchAndLockJobs(availableSlots: number) {
-        const getQuery = (jobStatus: JobStatus, extraCondition: string = '') => {
+        const getQuery = (jobStatus: JobStatus, extraCondition?: string) => {
             const whereClause = extraCondition 
-                ? `WHERE "Job"."status" = ${jobStatus.toString()}
-                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                ? `WHERE "Job"."status" = '${jobStatus.toString()}'
+                AND "Job"."aiSource" = '${this.aiSource.toString()}'
                 AND "runAfter" < NOW()
                 AND ${extraCondition}`
-                : `WHERE "Job"."status" = ${jobStatus.toString()}
-                AND "Job"."aiSource" = ${this.aiSource.toString()}
+                : `WHERE "Job"."status" = '${jobStatus.toString()}'
+                AND "Job"."aiSource" = '${this.aiSource.toString()}'
                 AND "runAfter" < NOW()`;
             
             return `
@@ -140,15 +144,15 @@ class Executor {
         }
 
         return await prisma.$transaction(async (tx) => {
-            let jobs = await tx.$queryRaw<
+            let jobs = await tx.$queryRawUnsafe<
                 { id: string; promptId: string, promptContent: string }[]
-            >`${getQuery(JobStatus.PENDING)}`;
+            >(getQuery(JobStatus.PENDING));
             
             // get failed jobs if pending jobs are ready to retry (after 1 hour)
             if (jobs.length === 0) {
-                jobs = await tx.$queryRaw<
+                jobs = await tx.$queryRawUnsafe<
                     { id: string; promptId: string, promptContent: string }[]
-                >`${getQuery(JobStatus.FAILED, `NOW() > "Job"."updatedAt" + INTERVAL '1 hour'`)}`;
+                >(getQuery(JobStatus.FAILED, `NOW() > "Job"."updatedAt" + INTERVAL '1 hour'`));
             }
 
             if (jobs.length === 0) return [];

@@ -67,9 +67,18 @@ const Navbar = () => {
           href={session ? "/dashboard" as any : "/login" as any} 
           className="text-[12px] font-medium text-zinc-500 hover:text-zinc-200 transition-colors"
         >{session ? "Dashboard" : "Sign in"}</Link>
-          {!session && <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
-            Get Access
-          </button>}
+          {session ? (
+            <button 
+              onClick={() => authClient.signOut()}
+              className="bg-zinc-800 text-zinc-300 px-4 py-1.5 rounded text-[11px] font-bold hover:bg-zinc-700 hover:text-white transition-all"
+            >
+              Logout
+            </button>
+          ) : (
+            <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
+              Get Access
+            </button>
+          )}
         </div>}
     </div>
   </nav>
