@@ -9,6 +9,7 @@ import { DateRangeSelector } from "@/components/dashboard/date-range-selector";
 import type { Mention, Brand } from "@prompt-lens/common-types";
 import useDashboard from "@/hooks/use-dashboard";
 import useMetrics from "@/hooks/use-metrics";
+import { useCompanyStore } from "@/store/company-store";
 
 type MentionWithBrand = Mention & {
   brand: Brand;
@@ -216,7 +217,6 @@ const mockCitations: string[] = [
 ];
 
 export default function DashboardPage() {
-  const { currentCompany, isLoading } = useCompany();
   const {
     citations,
     mentions,
@@ -230,14 +230,7 @@ export default function DashboardPage() {
     setDateRangeOption,
   } = useDashboard();
   const { visibilityScore, mentionScore, citationShare } = useMetrics();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-[#030303]">
-        <Loader2 className="animate-spin text-zinc-600" />
-      </div>
-    );
-  }
+  const { currentCompany } = useCompanyStore();
 
   if (!currentCompany) {
     return null;

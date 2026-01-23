@@ -3,6 +3,7 @@ import prisma from "@prompt-lens/db";
 import { getMentionSchema, getCitationSchema } from "../schema/dashboard.schema";
 import { z } from "zod";
 import { safeMembershipCheck } from "@/utils";
+import { getCurrentCompanyMentions } from "@/services/company-analytics";
 
 export const getAllAndRelevantMentions = async (req: Request, res: Response) => {
     try {
@@ -42,16 +43,7 @@ export const getAllAndRelevantMentions = async (req: Request, res: Response) => 
         })
 
         // get relevant mentions
-        const relevantMentions = []
-        for(const mention of mentions) {
-            let isRelevant = safeMembershipCheck(company.name, mention.brand.aliases)
-            isRelevant = isRelevant || company.name.toLowerCase() == mention.brand.displayName.toLowerCase()
-            isRelevant = isRelevant || company.name.toLowerCase() == mention.brand.canonicalName.toLowerCase()
-
-            if (isRelevant) {
-                relevantMentions.push(mention)
-            }
-        }
+        const relevantMentions = getCurrentCompanyMentions(company, mentions)
 
         return res.status(200).json({
             mentions,

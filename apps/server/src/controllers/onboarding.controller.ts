@@ -18,7 +18,7 @@ export const extractDataFromWebsite = async (req: Request, res: Response) => {
             companyData: {
                 ...companyData,
                 name: body.companyName,
-                websiteUrl: body.websiteUrl.toString(),
+                websiteUrl: body.websiteUrl.toString().replace(/\/+$/, ''),
             },
             competitors,
             promptSuggestions

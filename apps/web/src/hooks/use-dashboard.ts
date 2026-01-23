@@ -7,7 +7,16 @@ import { useCompanyStore } from "@/store/company-store";
 export type DateRangeOption = "7d" | "14d" | "1m" | "6m";
 
 const useDashboard = () => {
-    const { citations, mentions, currentCompanyMentions, responsesAnalyzed, setCitations, setMentions, setCurrentCompanyMentions, setResponsesAnalyzed } = useDashboardStore();
+    const { 
+        citations, 
+        mentions, 
+        currentCompanyMentions, 
+        responsesAnalyzed, 
+        setCitations, 
+        setMentions, 
+        setCurrentCompanyMentions, 
+        setResponsesAnalyzed 
+    } = useDashboardStore();
     const { currentCompany } = useCompanyStore();
 
     const [dateRange, setDateRange] = useState<DateRangeOption>("7d");

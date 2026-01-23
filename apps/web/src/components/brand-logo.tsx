@@ -11,27 +11,27 @@ export default function BrandLogo({ domain, name, size = 48 }: { domain?: string
     
     return (
       <div 
-        className="rounded-sm flex items-center justify-center text-white font-bold p-4"
+        className="rounded-md flex items-center justify-center text-white font-semibold shadow-sm"
         style={{
           width: size,
           height: size,
-          background: `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${hue + 30}, 70%, 40%))`
+          background: `linear-gradient(135deg, hsl(${hue}, 70%, 55%), hsl(${hue + 30}, 70%, 45%))`
         }}
       >
-        <span className="text-xs">{initials}</span>
+        <span style={{ fontSize: size * 0.4 }}>{initials}</span>
       </div>
     );
   }
   
   return (
-    <div className='bg-white/5 rounded-sm p-1'>
+    <div className='bg-white/10 backdrop-blur-sm rounded-md p-0.5 shadow-sm border border-white/5'>
         <Image
           src={`https://www.google.com/s2/favicons?domain=${domain}&sz=256`}
           alt={`${name} logo`}
           width={size}
           height={size}
           quality={75}
-          className="rounded-sm"
+          className="rounded"
           onError={() => setError(true)}
         />
     </div>
