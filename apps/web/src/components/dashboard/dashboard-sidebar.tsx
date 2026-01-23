@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import Link from "next/link";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -38,11 +37,6 @@ const menuItems = [
     icon: FileText,
     href: "/dashboard/responses",
   },
-  {
-    title: "Citations",
-    icon: Quote,
-    href: "/dashboard/citations",
-  },
 ];
 
 export function DashboardSidebar() {
@@ -53,7 +47,7 @@ export function DashboardSidebar() {
       <SidebarHeader className="p-6 space-y-6">
         {/* Product Logo and Name */}
         <div className="flex items-center gap-2.5">
-          <div 
+          <div
             className="w-7 h-7 rounded-lg flex items-center justify-center shadow-lg"
           >
             <Target size={14} strokeWidth={3} />
@@ -66,7 +60,7 @@ export function DashboardSidebar() {
         {/* Current Company */}
         {currentCompany && (
           <div className="flex items-center gap-3 p-3 bg-sidebar-accent border border-sidebar-border rounded-lg hover:bg-white/3 transition-colors">
-            <div 
+            <div
               className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-md"
             >
               <BrandLogo domain={currentCompany.url} name={currentCompany.name} size={32} />
@@ -91,12 +85,14 @@ export function DashboardSidebar() {
             <SidebarMenu className="space-y-1">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    className="group relative px-3 py-2 text-[13px] font-medium text-zinc-400 hover:text-sidebar-foreground rounded-lg transition-all border border-transparent hover:border-sidebar-border"
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
-                    <span className="tracking-wide">{item.title}</span>
-                  </SidebarMenuButton>
+                  <Link href={item.href as any}  className="w-full">
+                    <SidebarMenuButton
+                      className="group relative px-3 py-2 text-[13px] font-medium text-zinc-400 hover:text-sidebar-foreground rounded-lg transition-all border border-transparent hover:border-sidebar-border"
+                    >
+                      <item.icon className="w-4 h-4 shrink-0" strokeWidth={1.5} />
+                      <span className="tracking-wide">{item.title}</span>
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
