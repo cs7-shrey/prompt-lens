@@ -57,6 +57,7 @@ const MentionsData = ({ mentions }: MentionsDataProps) => {
     const chartData = topBrands.map((item) => ({
         name: item.brand.displayName,
         value: item.percentage,
+        brand: item.brand,
     })).sort((a, b) => a.value - b.value);
 
     return (
@@ -87,7 +88,7 @@ const MentionsData = ({ mentions }: MentionsDataProps) => {
                                     const maxLength = 15;
                                     const text = String(payload.value);
                                     const truncated = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-                                    const brand = topBrands[index as number]?.brand;
+                                    const brand = chartData[index as number]?.brand;
                                     const logoUrl = brand?.websiteUrl ? getLogoUrl(brand.websiteUrl).primary : null;
                                     
                                     return (
