@@ -2,9 +2,10 @@ import axios from "axios"
 import type { ExtractDataResponse, CreateOnboardingPayload } from "@/types/onboarding"
 import type { Company } from "@/store/company-store"
 import type { GetMentionsResponse, MentionWithBrand, PromptsWithResponseAndMentions, PromptWithRelevantMentions } from "@/types"
+import { env } from "@prompt-lens/env/web"
 
 const axiosInstance = axios.create({
-    baseURL: process.env.NEXT_SERVER_URL || "http://localhost:3000/api",
+    baseURL: env.NEXT_PUBLIC_SERVER_URL + "/api" || "http://localhost:3000/api",
     withCredentials: true,
 })
 

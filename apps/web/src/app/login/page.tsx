@@ -19,7 +19,7 @@ const ACCENT = "#575BC7";
 
 
 export default function LoginPage() {
-  const { isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const handleGoogleSignIn = async () => {
@@ -48,14 +48,6 @@ export default function LoginPage() {
 
   if (isPending) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className='animate-spin'/>
-      </div>
-    );
-  }
-
-  if (isPending) {
-    return (
       <div className="flex min-h-screen bg-[#030303] items-center justify-center">
         <motion.div 
           animate={{ rotate: 360 }}
@@ -64,6 +56,11 @@ export default function LoginPage() {
         />
       </div>
     );
+  }
+
+  if(session !== null) {
+    router.push("/dashboard");
+    return null;
   }
 
   return (

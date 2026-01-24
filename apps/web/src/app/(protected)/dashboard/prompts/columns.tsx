@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import type { PromptWithRelevantMentions } from "@/types";
+import type { PromptWithRelevantMentions, ResponseWithMentions } from "@/types";
 import type { Brand } from "@prompt-lens/common-types";
 import BrandLogo from "@/components/brand-logo";
 import { getMentionScoreAccumulative, getSentimentScoreAccumulative } from "@/lib/metrics";
@@ -193,7 +193,7 @@ export const columns: ColumnDef<PromptWithRelevantMentions>[] = [
       const prompt = row.original;
       
       // Count mentions per brand
-      const mentions = prompt.responses.flatMap(response => response.mentions);
+      const mentions = prompt.responses.flatMap((response: ResponseWithMentions) => response.mentions);
       const brandMap = new Map();
 
       mentions.forEach((mention) => {

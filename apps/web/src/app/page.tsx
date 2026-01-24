@@ -117,12 +117,12 @@ const Hero = () => {
           </div>
           
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight text-zinc-100 mb-10 max-w-5xl mx-auto leading-[0.9] text-balance">
-            The standard for <br /> 
-            <span className="text-zinc-500">AI search visibility.</span>
+            Monitor your brand in <br /> 
+            <span className="text-zinc-500">AI responses.</span>
           </h1>
           
           <p className="text-base md:text-lg text-zinc-500 max-w-2xl mx-auto mb-14 font-medium leading-relaxed">
-            PromptLens provides the technical framework to monitor, quantify, and optimize your brand presence inside Large Language Models.
+            PromptLens tracks how AI models mention your brand across ChatGPT, Claude, and Perplexity. Analyze sentiment, position, and citations in real-time.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -130,7 +130,7 @@ const Hero = () => {
               className="px-8 py-3.5 rounded text-white font-bold text-sm transition-all hover:brightness-110 shadow-lg"
               style={{ backgroundColor: ACCENT }}
             >
-              Start Free Audit
+              Start Monitoring
             </button>
             <button className="bg-transparent text-zinc-400 border border-white/[0.08] px-8 py-3.5 rounded text-sm font-bold hover:bg-white/[0.02] hover:text-zinc-200 transition-all flex items-center gap-2">
               View Methodology
@@ -152,7 +152,7 @@ const Hero = () => {
                 {[1,2,3].map(i => <div key={i} className="w-2 h-2 rounded-full bg-white" />)}
               </div>
               <div className="text-[9px] font-bold text-zinc-600 tracking-[0.3em] uppercase">
-                Real-Time Inference Stream
+                AI Response Analysis
               </div>
               <div className="w-1 h-1 rounded-full animate-pulse" style={{ backgroundColor: ACCENT }} />
             </div>
@@ -177,9 +177,9 @@ const Hero = () => {
                 </div>
               </div>
               <div className="md:col-span-4 space-y-5">
-                <SmallMetric label="Citation Share" value="24.8%" status="up" />
-                <SmallMetric label="Model Authority" value="High" status="stable" />
-                <SmallMetric label="Source Count" value="1,402" status="up" />
+                <SmallMetric label="Mention Rate" value="24.8%" status="up" />
+                <SmallMetric label="Sentiment Score" value="High" status="stable" />
+                <SmallMetric label="Responses Tracked" value="1,402" status="up" />
               </div>
             </div>
           </div>
@@ -208,10 +208,10 @@ const MetricsStrip = () => (
   <div className="py-16 border-y border-white/[0.03] bg-black">
     <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
       {[
-        { label: 'Latency', value: '84ms' },
+        { label: 'AI Models', value: '3' },
         { label: 'Uptime', value: '99.99%' },
-        { label: 'Sources', value: '1.2B+' },
-        { label: 'Accuracy', value: '99.8%' }
+        { label: 'Prompts Tested', value: '1.2M+' },
+        { label: 'Brands Tracked', value: '500+' }
       ].map(m => (
         <div key={m.label} className="text-center">
           <div className="text-xl font-medium text-zinc-200 mb-1">{m.value}</div>
@@ -228,18 +228,18 @@ const MetricsStrip = () => (
  */
 const FeatureBento = () => {
   return (
-    <section className="py-28 px-6">
+    <section className="py-16 md:py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
           {/* Hero Feature Card */}
-          <div className="md:col-span-7 bg-white/[0.01] border border-white/[0.04] rounded-xl p-10 relative overflow-hidden group">
+          <div className="md:col-span-2 lg:col-span-7 bg-white/[0.01] border border-white/[0.04] rounded-xl p-8 md:p-10 relative overflow-hidden group">
             <div className="relative z-10">
               <div className="w-10 h-10 rounded bg-zinc-900 border border-white/[0.05] flex items-center justify-center text-zinc-400 mb-8">
                 <Activity size={18} strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-medium text-zinc-100 mb-4 tracking-tight">Technical Sentiment Audits</h3>
+              <h3 className="text-xl md:text-2xl font-medium text-zinc-100 mb-4 tracking-tight">Sentiment Analysis</h3>
               <p className="text-zinc-500 text-sm font-medium leading-relaxed max-w-sm">
-                Understand the weighted semantic bias LLMs hold toward your brand in comparative queries.
+                Track positive, negative, and neutral sentiment across all AI model responses mentioning your brand.
               </p>
             </div>
             {/* Very subtle accent hover effect */}
@@ -248,24 +248,24 @@ const FeatureBento = () => {
               style={{ background: `linear-gradient(90deg, transparent, ${ACCENT}, transparent)` }}
             />
           </div>
-
+          
           {/* Minimal Solid Card */}
-          <div className="md:col-span-5 bg-zinc-900/40 border border-white/[0.04] rounded-xl p-10 flex flex-col justify-between">
+          <div className="md:col-span-2 lg:col-span-5 bg-zinc-900/40 border border-white/[0.04] rounded-xl p-8 md:p-10 flex flex-col justify-between">
             <div>
               <ShieldCheck size={20} className="text-zinc-600 mb-8" />
-              <h3 className="text-xl font-medium text-zinc-100 mb-3 tracking-tight">Compliance Grade Proxies</h3>
-              <p className="text-zinc-500 text-sm font-medium">Enterprise-level anonymity for high-frequency model monitoring.</p>
+              <h3 className="text-lg md:text-xl font-medium text-zinc-100 mb-3 tracking-tight">Competitor Tracking</h3>
+              <p className="text-zinc-500 text-sm font-medium">Monitor how your competitors are mentioned alongside your brand in AI responses.</p>
             </div>
             <div className="flex gap-2 mt-8">
               {[1,2,3].map(i => <div key={i} className="w-6 h-1 rounded-full bg-zinc-800" />)}
             </div>
           </div>
 
-          <FeatureSmall title="Inference History" icon={Layers} />
-          <FeatureSmall title="Global Node Network" icon={Globe} />
-          <FeatureSmall title="Automated Reporting" icon={Bot} />
-          <FeatureSmall title="Shadow Monitoring" icon={MousePointer2} />
-          <FeatureSmall title="Source Attribution" icon={Target} />
+          <FeatureSmall title="Response History" icon={Layers} />
+          <FeatureSmall title="Multi-Model Coverage" icon={Globe} />
+          <FeatureSmall title="Automated Monitoring" icon={Bot} />
+          <FeatureSmall title="Position Tracking" icon={MousePointer2} />
+          <FeatureSmall title="Citation Analysis" icon={Target} />
         </div>
       </div>
     </section>
@@ -273,7 +273,7 @@ const FeatureBento = () => {
 };
 
 const FeatureSmall = ({ title, icon: Icon }: { title: string, icon: React.ElementType }) => (
-  <div className="md:col-span-2.4 min-w-[200px] flex-1 bg-white/[0.01] border border-white/[0.03] rounded-xl p-6 hover:bg-white/[0.02] transition-colors">
+  <div className="md:col-span-1 lg:col-span-4 bg-white/[0.01] border border-white/[0.03] rounded-xl p-6 hover:bg-white/[0.02] transition-colors">
     <Icon size={16} className="text-zinc-600 mb-4" />
     <h4 className="text-[13px] font-medium text-zinc-300">{title}</h4>
   </div>
@@ -323,7 +323,7 @@ const Footer = () => (
             <span className="font-bold tracking-tighter text-white uppercase text-[9px]">PromptLens</span>
           </div>
           <p className="text-zinc-600 text-[12px] leading-relaxed font-medium">
-            Advancing the science of model reputation management.
+            Track how AI models mention your brand.
           </p>
         </div>
         
@@ -331,8 +331,8 @@ const Footer = () => (
           <div key={idx}>
             <h4 className="text-[9px] font-bold text-zinc-200 uppercase tracking-[0.3em] mb-8">{col}</h4>
             <ul className="space-y-4 text-[13px] font-medium text-zinc-500">
-              {idx === 0 && ['API Reference', 'Model Coverage', 'Stealth Architecture'].map(item => <li key={item}><a href="#" className="hover:text-zinc-200">{item}</a></li>)}
-              {idx === 1 && ['Methodology', 'Benchmarks', 'Engineering Blog'].map(item => <li key={item}><a href="#" className="hover:text-white">{item}</a></li>)}
+              {idx === 0 && ['Prompt Library', 'Model Coverage', 'Analytics Dashboard'].map(item => <li key={item}><a href="#" className="hover:text-zinc-200">{item}</a></li>)}
+              {idx === 1 && ['How It Works', 'Case Studies', 'Documentation'].map(item => <li key={item}><a href="#" className="hover:text-white">{item}</a></li>)}
               {idx === 2 && ['Privacy Policy', 'Terms of Service', 'Security'].map(item => <li key={item}><a href="#" className="hover:text-white">{item}</a></li>)}
             </ul>
           </div>
@@ -340,10 +340,10 @@ const Footer = () => (
       </div>
       
       <div className="pt-10 border-t border-white/[0.02] flex justify-between items-center text-[9px] font-bold tracking-[0.25em] text-zinc-700 uppercase">
-        <div>© 2026 PromptLens Intelligence Corp.</div>
+        <div>© 2026 PromptLens Corp.</div>
         <div className="flex items-center gap-2 text-emerald-900">
             <div className="w-1 h-1 rounded-full bg-emerald-700" />
-            Core Systems: Active
+            Monitoring: Active
         </div>
       </div>
     </div>
