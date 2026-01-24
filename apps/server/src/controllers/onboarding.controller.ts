@@ -49,6 +49,8 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
         console.log(req.body);
 
         const { company: { companyName: name, ...company }, competitors, promptsToMonitor, sourcesToMonitor } = req.body as z.infer<typeof createTrackingCompanyAndMonitorSchema>;
+        company.websiteUrl = company.websiteUrl.replace(/\/+$/, "")
+
         const existingCompany = await prisma.trackingCompany.findUnique({
             where: {
                 url: company.websiteUrl,

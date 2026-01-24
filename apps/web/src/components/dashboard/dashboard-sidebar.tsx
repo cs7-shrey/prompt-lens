@@ -6,10 +6,14 @@ import {
   FileText,
   Quote,
   Target,
+  User2,
+  ChevronUp,
+  LogOut,
 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -18,7 +22,14 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCompanyStore } from "@/store/company-store";
+import { authClient } from "@/lib/auth-client";
 import BrandLogo from "../brand-logo";
 
 const menuItems = [
@@ -41,12 +52,24 @@ const menuItems = [
 
 export function DashboardSidebar() {
   const { currentCompany } = useCompanyStore();
+  const { data: session } = authClient.useSession();
+  console.log(currentCompany);
+  
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/login";
+        },
+      },
+    });
+  };
 
   return (
     <Sidebar className="">
-      <SidebarHeader className="p-6 space-y-6">
+      <SidebarHeader className="py-2 px-0 gap-0">
         {/* Product Logo and Name */}
-        <div className="flex items-center gap-2.5">
+        <div className="p-2 flex items-center gap-2.5 w-full">
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center shadow-lg"
           >
@@ -59,7 +82,10 @@ export function DashboardSidebar() {
 
         {/* Current Company */}
         {currentCompany && (
-          <div className="flex items-center gap-3 p-3 bg-sidebar-accent border border-sidebar-border rounded-lg hover:bg-white/3 transition-colors">
+          <div 
+            className="m-2 flex items-center gap-3 p-3 bg-white/5 border border-sidebar-border rounded-lg hover:bg-white/6 transition-colors"
+            // onClick={}
+            >
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-md"
             >
@@ -70,7 +96,7 @@ export function DashboardSidebar() {
                 {currentCompany.name}
               </p>
               <p className="text-[10px] text-zinc-600 truncate font-medium tracking-wider">
-                {currentCompany.url.replace(/^https?:\/\//, '')}
+                {currentCompany.url.replace(/^https?:\/\//, '').replace(/\/+$/, "")}
               </p>
             </div>
           </div>
@@ -99,6 +125,31 @@ export function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* User footer */}
+      <SidebarFooter className="bg-[#0A0A0A] border-t border-t-[#222222]">
+        <SidebarMenu>
+          <SidebarMenuItem className="">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-full">
+                <SidebarMenuButton>
+                  <User2 /> {session?.user?.name || "User"}
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width] rounded-sm"
+              >
+                <DropdownMenuItem onClick={handleSignOut} className={""}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  <span className="">Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

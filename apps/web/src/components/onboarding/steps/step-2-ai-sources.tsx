@@ -5,6 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Bot, Sparkles, Search } from "lucide-react";
 import type { AISource } from "@/types/onboarding";
+import perplexityIcon from "@/assets/perplexity-ai-icon.svg";
+import claudeIcon from "@/assets/claude-ai-icon.svg";
+import chatgptIcon from "@/assets/chatgpt-ai-icon.svg";
+import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const aiSourcesSchema = z.object({
     sourcesToMonitor: z
@@ -20,10 +25,12 @@ interface Step2Props {
     onNext: (data: AISourcesForm) => void;
 }
 
+const IMAGE_SIZE = 40;
+
 const sources: { id: AISource; label: string; icon: React.ReactNode }[] = [
-    { id: "CHATGPT", label: "ChatGPT", icon: <Bot size={20} /> },
-    { id: "CLAUDE", label: "Claude", icon: <Sparkles size={20} /> },
-    { id: "PERPLEXITY", label: "Perplexity", icon: <Search size={20} /> },
+    { id: "CHATGPT", label: "ChatGPT", icon: <Image src={"/chatgpt-icon.svg"} alt="ChatGPT" width={IMAGE_SIZE} height={IMAGE_SIZE} /> },
+    { id: "CLAUDE", label: "Claude", icon: <Image src={"/claude-ai-icon.svg"} alt="Claude" width={IMAGE_SIZE} height={IMAGE_SIZE} /> },
+    { id: "PERPLEXITY", label: "Perplexity", icon: <Image src={"/perplexity-ai-icon.svg"} alt="Perplexity" width={IMAGE_SIZE} height={IMAGE_SIZE} /> },
 ];
 
 export function Step2AISources({ defaultValues, onNext }: Step2Props) {
@@ -31,6 +38,7 @@ export function Step2AISources({ defaultValues, onNext }: Step2Props) {
         register,
         handleSubmit,
         watch,
+        setValue,
         formState: { errors },
     } = useForm<AISourcesForm>({
         resolver: zodResolver(aiSourcesSchema),
@@ -38,6 +46,14 @@ export function Step2AISources({ defaultValues, onNext }: Step2Props) {
     });
 
     const selectedSources = watch("sourcesToMonitor") || [];
+
+    const handleCheckboxChange = (sourceId: AISource, checked: boolean) => {
+        const current = selectedSources;
+        const updated = checked
+            ? [...current, sourceId]
+            : current.filter((id) => id !== sourceId);
+        setValue("sourcesToMonitor", updated, { shouldValidate: true });
+    };
 
     return (
         <form onSubmit={handleSubmit(onNext)} className="space-y-8">
@@ -64,11 +80,10 @@ export function Step2AISources({ defaultValues, onNext }: Step2Props) {
                                 }
                             `}
                         >
-                            <input
-                                {...register("sourcesToMonitor")}
-                                type="checkbox"
-                                value={source.id}
-                                className="w-5 h-5 rounded border-white/[0.1] text-[#575BC7] focus:ring-[#575BC7] focus:ring-offset-0 bg-white/[0.02]"
+                            <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => handleCheckboxChange(source.id, checked as boolean)}
+                                className="w-5 h-5"
                             />
                             <div className="flex items-center gap-3 flex-1">
                                 <div

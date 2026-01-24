@@ -16,7 +16,6 @@ export const auth = betterAuth({
     google: {
       enabled: true,
       prompt: "select_account consent",
-      redirectURI: env.GOOGLE_REDIRECT_URI,
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }

@@ -12,6 +12,7 @@ import {
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 // Unified Accent Color
 const ACCENT = "#575BC7";
@@ -20,18 +21,22 @@ const ACCENT = "#575BC7";
 export default function LoginPage() {
   const { isPending } = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
       await authClient.signIn.social({ 
           provider: "google",
-          callbackURL: "/dashboard",
+          callbackURL: `${window.location.origin}/dashboard`,
         },
         {
           onError: (error) => {
+            console.log(error);
             toast.error(error.error.message || "Failed to sign in");
           },
+          onSuccess: () => {
+            router.push("/dashboard");
+          }
         }
       );
     } catch (error) {
