@@ -13,5 +13,8 @@
     ".": {
       "default": "./src/index.ts"
     }
+  },
+  "dependencies": {
+    "@prompt-lens/db": "workspace:*"
   }
 }
