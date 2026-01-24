@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import fs from 'node:fs';
-import { type Page, type Browser, type BrowserContext } from 'playwright';
+import { type Page, type BrowserContext } from 'playwright';
 // import playwright from 'playwright'; // Core Playwright
 import path from 'node:path';
 import playwrightExtra from 'playwright-extra'; // For stealth
@@ -19,16 +19,16 @@ export async function humanType(page: Page, selector: string, text: string) {
 }
 
 function getChromeExecutablePath() {
-    if (process.platform === 'win32') {
-      return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'; // Common Windows path
-      // Or: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-    } else if (process.platform === 'darwin') {
-      return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-    } else if (process.platform === 'linux') {
-      return '/usr/bin/google-chrome'; // Or check with `which google-chrome`
-    }
-    throw new Error('Unsupported OS');
+  if (process.platform === 'win32') {
+    return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'; // Common Windows path
+    // Or: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+  } else if (process.platform === 'darwin') {
+    return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  } else if (process.platform === 'linux') {
+    return '/usr/bin/google-chrome'; // Or check with `which google-chrome`
   }
+  throw new Error('Unsupported OS');
+}
   
 export async function launchRealChromeWithProfile({ profileDir = './Chrome', proxy = null, headless = false } = {}) {
     const executablePath = getChromeExecutablePath();

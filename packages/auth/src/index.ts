@@ -3,6 +3,11 @@ import { env } from "@prompt-lens/env/server";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 
+const crossSubDomainCookies = env.NODE_ENV === "development" ? {} : {
+  enabled: true,
+  domain: ".".concat(env.BASE_FRONTEND_DOMAIN),
+}
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -26,6 +31,7 @@ export const auth = betterAuth({
       secure: true,
       httpOnly: true,
     },
+    ...crossSubDomainCookies,
   },
   plugins: [],
 });

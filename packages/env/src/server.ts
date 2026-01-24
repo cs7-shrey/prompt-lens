@@ -15,6 +15,7 @@ export const env = createEnv({
     ANTHROPIC_API_KEY: z.string().min(1),
     PERPLEXITY_API_KEY: z.string().min(1),
     SCRAPING_DOG_API_KEY: z.string().min(1),
+    BASE_FRONTEND_DOMAIN: z.string().min(1),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
