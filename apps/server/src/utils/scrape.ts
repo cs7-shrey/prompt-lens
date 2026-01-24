@@ -37,6 +37,7 @@ function cleanText(text: string): string {
         .trim();
 }
 export async function scrapeWebsiteContent(url: string): Promise<string> {
+  // TODO: make this gather more information rather than just the landing page
     const html = await fetchHTML(url);
     const rawText = extractMainText(html, url);
     return cleanText(rawText);

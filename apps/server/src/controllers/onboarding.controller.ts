@@ -136,7 +136,7 @@ export const isOnboardingCompleted = async (req: Request, res: Response) => {
         })
 
         if (!trackingCompany) {
-            return res.status(404).json({ message: "Onboarding not completed" });
+            return res.status(400).json({ message: "Onboarding not completed" });
         }
 
         return res.status(200).json({ isCompleted: true });

@@ -6,13 +6,22 @@ import ws from "ws";
 import { PrismaClient } from "../prisma/generated/client";
 
 neonConfig.webSocketConstructor = ws;
-neonConfig.poolQueryViaFetch = true;
+// Removed poolQueryViaFetch as we're using WebSockets in Node.js
 
 const adapter = new PrismaNeon({
   connectionString: env.DATABASE_URL,
 });
 
-const prisma = new PrismaClient({ adapter });
+// Singleton pattern to prevent multiple instances in development (HMR)
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+
+if (env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;
 export * from '../prisma/generated/client'; 

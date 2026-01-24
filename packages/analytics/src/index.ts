@@ -225,9 +225,13 @@ class AnalyticsRunner {
             const availableSlots = this.semaphore.available();
 
             if (availableSlots > 0) {
-                const responses = await this.fetchAndLockResponses(availableSlots);
-                for (const response of responses) {
-                    this.runAnalysis(response);
+                try {
+                    const responses = await this.fetchAndLockResponses(availableSlots);
+                    for (const response of responses) {
+                        this.runAnalysis(response);
+                    }
+                } catch (error) {
+                    console.error("Error in AnalyticsRunner", error);
                 }
             }
 

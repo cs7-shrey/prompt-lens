@@ -1,49 +1,36 @@
-import { auth } from "@prompt-lens/auth";
+import { createServer } from "./server";
 import { env } from "@prompt-lens/env/server";
-import { toNodeHandler } from "better-auth/node";
-import cors from "cors";
-import express from "express";
-import { authMiddleware } from "./middlewares/auth.middleware";
-import routes from "./routes";
+import prisma from "@prompt-lens/db";
 
-const app = express();
+const app = createServer();
 
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  }),
-);
-
-app.all("/api/auth{/*path}", toNodeHandler(auth));
-
-app.use(express.json());
-
-// Routes
-app.use("/api", routes);
-
-app.get("/", (_req, res) => {
-  res.status(200).send("OK");
-})
-
-// Protected route example - requires authentication
-app.get("/api/me", authMiddleware, (req, res) => {
-  res.status(200).json({
-    user: req.user,
-  });
+const server = app.listen(env.PORT, () => {
+    console.log(`Server is running on http://localhost:${env.PORT}`);
 });
 
-// Another protected route example
-app.get("/api/profile", authMiddleware, (req, res) => {
-  res.status(200).json({
-    message: `Hello, ${req.user?.name || req.user?.email}!`,
-    userId: req.user?.id,
-    email: req.user?.email,
-  });
-});
+// Graceful shutdown handler
+const shutdown = async (signal: string) => {
+    console.log(`${signal} received, starting graceful shutdown...`);
+    
+    server.close(async () => {
+        console.log("HTTP server closed");
+        
+        try {
+            await prisma.$disconnect();
+            console.log("Database connections closed");
+            process.exit(0);
+        } catch (error) {
+            console.error("Error during shutdown:", error);
+            process.exit(1);
+        }
+    });
+    
+    // Force shutdown after 10 seconds if graceful shutdown hangs
+    setTimeout(() => {
+        console.error("Forced shutdown after timeout");
+        process.exit(1);
+    }, 10000);
+};
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
