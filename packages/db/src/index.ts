@@ -9,7 +9,9 @@ import { PrismaClient } from "../prisma/generated/client";
 
 const isLocalDb = env.DATABASE_URL.includes("localhost");
 neonConfig.webSocketConstructor = ws;
-// Removed poolQueryViaFetch as we're using WebSockets in Node.js
+neonConfig.poolQueryViaFetch = true;
+
+console.log("isLocalDb —————————————————————————————————————————————————————", isLocalDb);
 
 const adapter = !isLocalDb ? new PrismaNeon({
   connectionString: env.DATABASE_URL,
