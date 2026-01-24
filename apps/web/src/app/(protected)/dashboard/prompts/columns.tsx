@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import type { PromptWithRelevantMentions, ResponseWithMentions } from "@/types";
+import type { MentionWithBrand, PromptWithRelevantMentions, ResponseWithMentions } from "@/types";
 import type { Brand } from "@prompt-lens/common-types";
 import BrandLogo from "@/components/brand-logo";
 import { getMentionScoreAccumulative, getSentimentScoreAccumulative } from "@/lib/metrics";
@@ -196,7 +196,7 @@ export const columns: ColumnDef<PromptWithRelevantMentions>[] = [
       const mentions = prompt.responses.flatMap((response: ResponseWithMentions) => response.mentions);
       const brandMap = new Map();
 
-      mentions.forEach((mention) => {
+      mentions.forEach((mention: MentionWithBrand) => {
           const brandId = mention.brand.id;
           if (brandMap.has(brandId)) {
               brandMap.get(brandId)!.count += 1;
@@ -218,7 +218,7 @@ export const columns: ColumnDef<PromptWithRelevantMentions>[] = [
       
       const remainingCount = brandMap.size - topBrands.length;
       
-      return <BrandStack brands={topBrands.map(brand => brand.brand)} remainingCount={remainingCount} />;
+      return <BrandStack brands={topBrands.map((brand: { brand: Brand }) => brand.brand)} remainingCount={remainingCount} />;
     },
   },
   {
