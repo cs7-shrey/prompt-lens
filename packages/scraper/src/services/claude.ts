@@ -17,6 +17,7 @@ export class ClaudeService implements ScraperService {
             await inputDiv.waitFor({
                 timeout: 5000
             });
+            inputDiv.clear();
             await humanType(page, 'div[aria-label="Write your prompt to Claude"]', prompt);
 
             const submitButton = page.locator('button[aria-label="Send message"]');

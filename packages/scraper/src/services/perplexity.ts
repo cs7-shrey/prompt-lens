@@ -52,6 +52,11 @@ export class PerplexityService implements ScraperService {
                     timeout: 15000
                 });
 
+                const anchor = citationDiv.locator('a')
+                await anchor.first().waitFor({
+                    timeout: 5000
+                });
+
                 const citationLinks = await citationDiv.locator('a').evaluateAll(anchors =>
                     anchors.map((a: any) => a.href)
                 );
