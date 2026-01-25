@@ -14,8 +14,8 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-[#030303]">
-        <Loader2 className="animate-spin text-zinc-600" />
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" />
       </div>
     );
   }

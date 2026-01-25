@@ -1,4 +1,4 @@
-import type { Mention, Brand, Prompt, Response } from "@prompt-lens/db";
+import type { Mention, Brand, Prompt, Response, AISource } from "@prompt-lens/db";
 
 // Re-define Sentiment enum to avoid importing Prisma client in browser
 export enum Sentiment {
@@ -7,4 +7,4 @@ export enum Sentiment {
   neutral = "neutral",
 }
 
-export type { Mention, Brand, Prompt, Response };
+export type { Mention, Brand, Prompt, Response, AISource };

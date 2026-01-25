@@ -1,7 +1,8 @@
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useState } from 'react';
 
-export default function BrandLogo({ domain, name, size = 48 }: { domain?: string | null, name: string, size: number }) {
+export default function BrandLogo({ domain, name, size = 48, className }: { domain?: string | null, name: string, size: number, className?: string }) {
   const [error, setError] = useState(false);
   
   if (error || !domain || !domain.startsWith("http")) {
@@ -11,7 +12,7 @@ export default function BrandLogo({ domain, name, size = 48 }: { domain?: string
     
     return (
       <div 
-        className="rounded-md flex items-center justify-center text-white font-semibold shadow-sm"
+        className={cn("rounded-md flex items-center justify-center text-white font-semibold shadow-sm", className)}
         style={{
           width: size,
           height: size,
@@ -24,7 +25,7 @@ export default function BrandLogo({ domain, name, size = 48 }: { domain?: string
   }
   
   return (
-    <div className='bg-white/10 backdrop-blur-sm rounded-md p-0.5 shadow-sm border border-white/5'>
+    <div className={cn('bg-white/10 backdrop-blur-sm rounded-md p-0.5 shadow-sm border border-white/5', className)}>
         <Image
           src={`https://www.google.com/s2/favicons?domain=${domain}&sz=256`}
           alt={`${name} logo`}

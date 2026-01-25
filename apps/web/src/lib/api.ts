@@ -1,7 +1,7 @@
 import axios from "axios"
 import type { ExtractDataResponse, CreateOnboardingPayload } from "@/types/onboarding"
 import type { Company } from "@/store/company-store"
-import type { GetMentionsResponse, MentionWithBrand, PromptsWithResponseAndMentions, PromptWithRelevantMentions } from "@/types"
+import type { FetchResponsesResponse, GetMentionsResponse, MentionWithBrand, PromptsWithResponseAndMentions, PromptWithRelevantMentions } from "@/types"
 import { env } from "@prompt-lens/env/web"
 
 const axiosInstance = axios.create({
@@ -55,4 +55,30 @@ export async function fetchMentions(trackingCompanyId: string, startDate: Date, 
 export async function fetchPrompts(trackingCompanyId: string): Promise<PromptWithRelevantMentions[]> {
     const response = await axiosInstance.get(`/prompts/all/${trackingCompanyId}`)
     return response.data.prompts
+}
+
+export async function fetchResponses({
+    trackingCompanyId,
+    startDate,
+    endDate,
+    page,
+    limit,
+    promptId,
+}: {
+    trackingCompanyId: string;
+    startDate: Date;
+    endDate: Date;
+    page: number;
+    limit: number;
+    promptId?: string;
+}): Promise<FetchResponsesResponse> {
+    const response = await axiosInstance.post("/responses/all", {
+        trackingCompanyId,
+        startDate,
+        endDate,
+        page,
+        limit,
+        promptId,
+    })
+    return response.data
 }

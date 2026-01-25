@@ -2,7 +2,6 @@ import { type Request, type Response } from "express";
 import prisma from "@prompt-lens/db";
 import { getMentionSchema, getCitationSchema } from "../schema/dashboard.schema";
 import { z } from "zod";
-import { safeMembershipCheck } from "@/utils";
 import { getCurrentCompanyMentions } from "@/services/company-analytics";
 
 export const getAllAndRelevantMentions = async (req: Request, res: Response) => {
