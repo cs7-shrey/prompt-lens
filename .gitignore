@@ -52,6 +52,7 @@ temp
 # Chrome
 chrome/
 Chrome/
+Chrome*
 
 # Temp files
 temp.*
