@@ -27,10 +27,13 @@ The code for this logic lives inside `packages/scraper`
 From the responses we get, we need to extract valuable information such as brand mentions, positioning, citations and sentiments. We build a list of mentions for a response, where each mention gets a `score`. This score is based on the brand's ranking and the sentiment of the ranking.
 
 Sentiment coefficients 
+
 $$
+\begin{align*}
 positive = 1 \\\\
 neutral = 0.6 \\\\
 negative = 0.2
+\end{align*}
 $$
 
 The score is calculated as <br>
