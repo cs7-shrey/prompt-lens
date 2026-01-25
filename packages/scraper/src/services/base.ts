@@ -5,6 +5,7 @@ import { type Page, type BrowserContext } from 'playwright';
 import path from 'node:path';
 import playwrightExtra from 'playwright-extra'; // For stealth
 // import StealthPlugin from 'puppeteer-extra-plugin-stealth'; // Stealth plugin (works with Playwright via playwright-extra)
+import { env } from '@prompt-lens/env/server';
 
 export interface ScraperService {
   browser: BrowserContext
@@ -39,7 +40,7 @@ function getChromeExecutablePath() {
   throw new Error('Unsupported OS');
 }
 
-export async function launchRealChromeWithProfile({ profileDir = './Chrome', proxy = null, headless = false } = {}) {
+export async function launchRealChromeWithProfile({ profileDir = env.DEFAULT_CHROME_PROFILE_PATH, proxy = null, headless = false } = {}) {
   const executablePath = getChromeExecutablePath();
 
   if (!fs.existsSync(executablePath)) {
