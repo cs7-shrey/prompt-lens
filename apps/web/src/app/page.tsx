@@ -75,9 +75,11 @@ const Navbar = () => {
               Logout
             </button>
           ) : (
-            <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
-              Get Access
-            </button>
+            <Link href="/login">
+              <button className="bg-zinc-100 text-black px-4 py-1.5 rounded text-[11px] font-bold hover:bg-white transition-all">
+                Get Access
+              </button>
+            </Link>
           )}
         </div>}
     </div>
@@ -126,12 +128,14 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button 
-              className="px-8 py-3.5 rounded text-white font-bold text-sm transition-all hover:brightness-110 shadow-lg"
-              style={{ backgroundColor: ACCENT }}
-            >
-              Start Monitoring
-            </button>
+            <Link href="/login">
+              <button 
+                className="px-8 py-3.5 rounded text-white font-bold text-sm transition-all hover:brightness-110 shadow-lg"
+                style={{ backgroundColor: ACCENT }}
+              >
+                Start Monitoring
+              </button>
+            </Link>
             <button className="bg-transparent text-zinc-400 border border-white/[0.08] px-8 py-3.5 rounded text-sm font-bold hover:bg-white/[0.02] hover:text-zinc-200 transition-all flex items-center gap-2">
               View Methodology
               <ArrowUpRight size={14} className="opacity-40" />
@@ -294,12 +298,14 @@ const CTASection = () => (
          Secure your AI <br />visibility protocol.
        </h2>
        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button 
-            className="px-10 py-4 rounded font-bold text-sm text-white hover:brightness-110 transition-all shadow-xl"
-            style={{ backgroundColor: ACCENT }}
-          >
-            Start Integration
-          </button>
+          <Link href="/login">
+            <button 
+              className="px-10 py-4 rounded font-bold text-sm text-white hover:brightness-110 transition-all shadow-xl"
+              style={{ backgroundColor: ACCENT }}
+            >
+              Start Integration
+            </button>
+          </Link>
           <button className="text-zinc-500 hover:text-zinc-200 font-bold px-10 py-4 text-sm transition-colors">
             Contact Technical Sales
           </button>
