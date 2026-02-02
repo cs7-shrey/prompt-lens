@@ -2,7 +2,7 @@ import { generateText, Output } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { perplexity } from "@ai-sdk/perplexity";
 import { z } from "zod";
-import { companyDataSchema, competitorSchema } from "@/schema/onboarding.schema";
+import { companyDataSchema, competitorSchema } from "../schema/onboarding.schema";
 
 export const extractCompanyData = async (content: string) => {
     const prompt = `You are analyzing website content to extract key company information. Based on the content below, extract the following details:

@@ -1,6 +1,7 @@
 import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
 import { env } from '@prompt-lens/env/web';
 import type { AppRouter } from '@prompt-lens/api/routers/index';
+import superjson from "superjson";
 
 export const trpcClient = createTRPCProxyClient<AppRouter>({
     links: [
@@ -12,6 +13,7 @@ export const trpcClient = createTRPCProxyClient<AppRouter>({
                     credentials: "include",
                 });
             },
+            transformer: superjson
         },
     ),
     ],
@@ -29,6 +31,7 @@ export function createServerTRPCClient(headers: HeadersInit) {
               credentials: "include",
             });
           },
+          transformer: superjson
         }),
       ],
     });

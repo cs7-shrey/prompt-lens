@@ -1,13 +1,13 @@
 import { protectedProcedure, router } from "..";
 import { createTrackingCompanyAndMonitorSchema, extractDataFromWebsiteSchema } from "../schema/onboarding.schema";
-import { scrapeWebsiteContent } from "@/utils/scrape";
+import { scrapeWebsiteContent } from "../utils/scrape";
 import { extractCompanyData, getCompetitors, getPromptsToMonitorSuggestions } from "../services/company-info";
 import prisma, { JobStatus, type JobCreateManyAndReturnArgs } from "@prompt-lens/db";
 import { TRPCError } from "@trpc/server";
 // import prisma, { JobStatus, type JobCreateManyAndReturnArgs } from "@prompt-lens/db";
 
 export const onboardingRouter = router({
-    extractDataFromWbsite: protectedProcedure.input(extractDataFromWebsiteSchema).query(async ({ input }) => {
+    extractDataFromWebsite: protectedProcedure.input(extractDataFromWebsiteSchema).query(async ({ input }) => {
         const content = await scrapeWebsiteContent(input.websiteUrl);
         const companyData = await extractCompanyData(content);
         const competitors = await getCompetitors(input.companyName, companyData);
@@ -16,7 +16,7 @@ export const onboardingRouter = router({
         return {
             companyData: {
                 ...companyData,
-                name: input.companyName,
+                companyName: input.companyName,
                 websiteUrl: input.websiteUrl.toString().replace(/\/+$/, ''),
             },
             competitors,
