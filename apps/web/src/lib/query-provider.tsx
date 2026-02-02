@@ -5,6 +5,7 @@ import type { AppRouter } from "@prompt-lens/api/routers/index";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { TRPCProvider } from "@/utils/trpc";
 import { env } from '@prompt-lens/env/web';
+import superjson from "superjson";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -48,6 +49,7 @@ export function ReactQueryProvider({ children }: { children: React.ReactNode }) 
               credentials: "include",
             });
           },
+          transformer: superjson
         }),
       ],
     }),

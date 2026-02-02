@@ -25,6 +25,7 @@
     "@prompt-lens/env": "*",
     "@prompt-lens/scraper": "*",
     "@trpc/server": "^11.9.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "superjson": "catalog:"
   }
 }

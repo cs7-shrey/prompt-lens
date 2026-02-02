@@ -3,6 +3,7 @@ import useDashboardStore from "@/store/dashboard-store";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useCompanyStore } from "@/store/company-store";
+import { useTRPC } from "@/utils/trpc";
 
 export type DateRangeOption = "7d" | "14d" | "1m" | "6m";
 
@@ -47,28 +48,34 @@ const useDashboard = () => {
         setEndDate(end);
     };
 
-    const { data: citationsData, isLoading: isCitationsLoading, isError: isCitationsError } = useQuery({
-        queryKey: ['citations', currentCompany?.id, startDate, endDate],
-        queryFn: () => {
-            if (currentCompany?.id) {
-                return fetchCitations(currentCompany.id, startDate, endDate);
-            }
-            return [];
-        },
-    });
-    const { data: mentionsData, isLoading: isMentionsLoading, isError: isMentionsError } = useQuery({
-        queryKey: ['mentions', currentCompany?.id, startDate, endDate],
-        queryFn: () => {
-            if (currentCompany?.id) {
-                return fetchMentions(currentCompany.id, startDate, endDate);
-            }
-            return { mentions: [], currentCompanyMentions: [], responsesAnalyzed: 0 };
-        },
-    });
+    const trpc = useTRPC();
+    const { 
+        data: citationsData, 
+        isLoading: isCitationsLoading, 
+        isError: isCitationsError 
+    } = useQuery(
+        trpc.dashboard.getCitations.queryOptions({
+            trackingCompanyId: currentCompany!.id,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+        }, {
+            enabled: !!currentCompany?.id
+        })
+    )
+
+    const { data: mentionsData, isLoading: isMentionsLoading, isError: isMentionsError } = useQuery(
+        trpc.dashboard.getAllAndRelevantMentions.queryOptions({
+            trackingCompanyId: currentCompany!.id,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+        }, {
+            enabled: !!currentCompany?.id
+        })
+    )
 
     useEffect(() => {
         if(citationsData) {
-            setCitations(citationsData);
+            setCitations(citationsData.citations);
         }
     }, [citationsData])
 
