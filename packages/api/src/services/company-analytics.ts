@@ -1,4 +1,4 @@
-import { safeMembershipCheck } from "@/utils";
+import { safeMembershipCheck } from "../utils";
 import type { Prisma } from "@prompt-lens/db";
 import type { TrackingCompany } from "@prompt-lens/db";
 
