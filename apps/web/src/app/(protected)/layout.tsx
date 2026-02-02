@@ -1,17 +1,13 @@
-"use client";
-
-import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { auth } from "@prompt-lens/auth";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
-export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-    const { data: session, isPending } = authClient.useSession();
-
-    if (isPending) {
-        return <div className="flex items-center justify-center h-screen">
-            <Loader2 className="animate-spin" />
-        </div>;
-    }
+export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
+    // Kinda accessing db from the nextjs backend
+    // Not sure if this should be done
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
 
     if (!session) {
         return redirect("/login");

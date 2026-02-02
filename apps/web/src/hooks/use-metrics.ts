@@ -1,7 +1,7 @@
 import { getMentionScoreAccumulative } from "@/lib/metrics";
 import { useCompanyStore } from "@/store/company-store";
 import useDashboardStore from "@/store/dashboard-store";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 const useMetrics = () => {
     const { currentCompany } = useCompanyStore();

@@ -1,7 +1,7 @@
-import { fetchPrompts } from "@/lib/api";
 import { getMentionScoreAccumulative, getSentimentScoreAccumulative } from "@/lib/metrics";
 import { useCompanyStore } from "@/store/company-store";
 import usePromptStore from "@/store/prompt-store";
+import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
@@ -9,22 +9,19 @@ const usePrompts = () => {
     const { prompts, setPrompts } = usePromptStore();
     const { currentCompany } = useCompanyStore();
     const [visibilityAndSentimentMap, setVisibilityAndSentimentMap] = useState<Record<string, { visibility: number; sentiment: number }>>({});
-
-    const { data: promptsData, isLoading: isPromptsLoading, isError: isPromptsError } = useQuery({
-        queryKey: ['prompts', currentCompany?.id],
-        queryFn: () => {
-            if (currentCompany?.id) {
-                return fetchPrompts(currentCompany.id);
-            }
-            return [];
-        },
-    });
+    const trpc = useTRPC();
+    const { data: promptsData, isLoading: isPromptsLoading, isError: isPromptsError } = useQuery(
+        trpc.prompt.getAllPromptsWithAnalytics.queryOptions({
+            trackingCompanyId: currentCompany!.id,
+        }, {
+            enabled: !!currentCompany?.id
+        }),
+    )
 
     useEffect(() => {
         if (promptsData) {
-            console.log(promptsData);
-            setPrompts(promptsData);
-            for(const prompt of promptsData) {
+            setPrompts(promptsData.prompts);
+            for(const prompt of promptsData.prompts) {
                 const relevantMentions = prompt.relevantMentions;
                 const mentionScore = getMentionScoreAccumulative(relevantMentions, prompt.responses.length);
                 setVisibilityAndSentimentMap(prev => ({

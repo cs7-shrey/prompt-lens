@@ -1,8 +1,8 @@
 import type { ResponseWithMentionsAndPrompt } from "@/types";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchResponses } from "@/lib/api";
 import { useCompanyStore } from "@/store/company-store";
+import { useTRPC } from "@/utils/trpc";
 
 interface Options {
     promptId?: string;
@@ -18,16 +18,31 @@ const useResponses = ({ promptId }: Options = {}) => {
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 7)));
     const [endDate, setEndDate] = useState<Date>(new Date());
 
-    const { data: responsesData, isLoading: isResponsesLoading, isError: isResponsesError } = useQuery({
-        queryKey: ['responses', currentCompany?.id, startDate, endDate, page, limit, promptId],
-        queryFn: () => {
-            if (currentCompany?.id) {
-                return fetchResponses({ trackingCompanyId: currentCompany.id, startDate, endDate, page, limit, promptId });
-            }
-            return { responses: [], totalCount: 0, totalPages: 0, page: 1, limit: 10 };
-        },
-        enabled: !!currentCompany?.id,
-    });
+    const trpc = useTRPC();
+    const getQueryOptions = (promptId?: string) => {
+        const queryOptions = {
+            trackingCompanyId: currentCompany!.id,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            page,
+            limit,
+        }
+        if(promptId) {
+            return trpc.response.getResponseByPromptIdPaginated.queryOptions({
+                ...queryOptions,
+                promptId,
+            }, {
+                enabled: !!currentCompany?.id
+            })
+        }
+        return trpc.response.getAllResponsesPaginated.queryOptions(queryOptions, {
+            enabled: !!currentCompany?.id
+        });
+    }
+
+    const { data: responsesData, isLoading: isResponsesLoading, isError: isResponsesError } = useQuery(
+        getQueryOptions(promptId),
+    )
 
     useEffect(() => {
         if (responsesData) {

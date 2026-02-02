@@ -7,7 +7,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ReactQueryProvider>
-        {children}
+          {children}
       </ReactQueryProvider>
       <Toaster richColors />
     </>

@@ -22,6 +22,7 @@ export default function LoginPage() {
   const { data: session, isPending } = authClient.useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);

@@ -1,0 +1,30 @@
+{
+  "name": "@prompt-lens/api",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsdown",
+    "test": "echo 'Add test script here'",
+    "lint": "echo 'Add lint script here'"
+  },
+  "dependencies": {
+    "@prompt-lens/analytics": "*",
+    "@prompt-lens/auth": "*",
+    "@prompt-lens/config": "*",
+    "@prompt-lens/db": "*",
+    "@prompt-lens/env": "*",
+    "@prompt-lens/scraper": "*",
+    "@trpc/server": "^11.9.0",
+    "zod": "^4.3.6",
+    "superjson": "catalog:"
+  }
+}

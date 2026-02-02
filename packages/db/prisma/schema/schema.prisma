@@ -67,8 +67,6 @@ model TrackingCompany {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([url])
 }
 
 model Prompt {

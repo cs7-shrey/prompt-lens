@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { extractCompanyData, createOnboarding } from "@/lib/api";
 import type {
     OnboardingFormData,
     ExtractDataResponse,
@@ -12,6 +11,7 @@ import type {
     CompanyDetails,
     Competitor,
 } from "@/types/onboarding";
+import { trpcClient } from "@/utils/trpc-client";
 
 interface UseOnboardingReturn {
     currentStep: number;
@@ -60,20 +60,23 @@ export function useOnboarding(): UseOnboardingReturn {
         setExtractFailed(false);
         
         // Fire off the API call asynchronously without blocking
-        extractCompanyData(data.companyName, data.websiteUrl)
-            .then((result) => {
-                console.log(result);
-                setSuggestions(result);
-                toast.success("Website analyzed successfully!");
-            })
-            .catch((error) => {
-                console.error("Extract data failed:", error);
-                setExtractFailed(true);
-                toast.error("Could not analyze website. You can fill details manually.");
-            })
-            .finally(() => {
-                setIsExtractLoading(false);
-            });
+        trpcClient.onboarding.extractDataFromWebsite.query({
+            companyName: data.companyName,
+            websiteUrl: data.websiteUrl
+        })
+        .then((result) => {
+            console.log(result);
+            setSuggestions(result);
+            toast.success("Website analyzed successfully!");
+        })
+        .catch((error) => {
+            console.error("Extract data failed:", error);
+            setExtractFailed(true);
+            toast.error("Could not analyze website. You can fill details manually.");
+        })
+        .finally(() => {
+            setIsExtractLoading(false);
+        });
         
         // Proceed to next step immediately without waiting
         goNext();
@@ -125,7 +128,7 @@ export function useOnboarding(): UseOnboardingReturn {
                 sourcesToMonitor: formData.sourcesToMonitor,
             };
 
-            await createOnboarding(payload);
+            await trpcClient.onboarding.createTrackingCompanyAndMonitor.mutate(payload)
             toast.success("Onboarding completed successfully!");
             router.push("/dashboard" as any);
         } catch (error: any) {
