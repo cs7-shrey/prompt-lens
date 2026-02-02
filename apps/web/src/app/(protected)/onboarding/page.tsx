@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { useOnboarding } from "@/hooks/use-onboarding";
 import SideVisual from "@/components/onboarding/side-visual";
 import { StepIndicator } from "@/components/onboarding/step-indicator";
@@ -9,53 +8,23 @@ import { Step2AISources } from "@/components/onboarding/steps/step-2-ai-sources"
 import { Step3CompanyDetails } from "@/components/onboarding/steps/step-3-company-details";
 import { Step4Competitors } from "@/components/onboarding/steps/step-4-competitors";
 import { Step5Prompts } from "@/components/onboarding/steps/step-5-prompts";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { isOnboardingComplete } from "@/lib/api";
-import { Loader2 } from "lucide-react";
 
 export default function OnboardingPage() {
-  const [isChecking, setIsChecking] = useState(true);
-  const router = useRouter();
-  
-  // Call useOnboarding hook at the top level, before any conditional returns
-  const {
-    currentStep,
-    formData,
-    suggestions,
-    isExtractLoading,
-    extractFailed,
-    isSubmitting,
-    goBack,
-    updateStep1,
-    updateStep2,
-    updateStep3,
-    updateStep4,
-    updateStep5,
-    submitOnboarding,
-  } = useOnboarding();
-
-  useEffect(() => {
-    const checkOnboarding = async () => {
-      try {
-        await isOnboardingComplete();
-        router.push("/dashboard" as any);
-      } catch (error) {
-        console.log(error);
-      } 
-      finally {
-        setIsChecking(false);
-      }
-    }
-    checkOnboarding();
-  }, [router]);
-
-  if (isChecking) {
-    return <div className="flex items-center justify-center h-screen">
-      <Loader2 className="animate-spin" />
-    </div>;
-  }
+    const {
+        currentStep,
+        formData,
+        suggestions,
+        isExtractLoading,
+        extractFailed,
+        isSubmitting,
+        goBack,
+        updateStep1,
+        updateStep2,
+        updateStep3,
+        updateStep4,
+        updateStep5,
+        submitOnboarding,
+    } = useOnboarding();
 
     const handleStep1Submit = (data: any) => {
         updateStep1(data);

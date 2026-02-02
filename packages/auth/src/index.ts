@@ -1,5 +1,5 @@
 import prisma from "@prompt-lens/db";
-import { env } from "@prompt-lens/env/server";
+import { env } from "@prompt-lens/env/shared";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 

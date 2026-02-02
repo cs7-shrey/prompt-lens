@@ -51,16 +51,6 @@ export const createTrackingCompanyAndMonitor = async (req: Request, res: Respons
         const { company: { companyName: name, ...company }, competitors, promptsToMonitor, sourcesToMonitor } = req.body as z.infer<typeof createTrackingCompanyAndMonitorSchema>;
         company.websiteUrl = company.websiteUrl.replace(/\/+$/, "")
 
-        const existingCompany = await prisma.trackingCompany.findUnique({
-            where: {
-                url: company.websiteUrl,
-            }
-        })
-
-        if (existingCompany) {
-            return res.status(400).json({ message: "Invalid request" })
-        }
-
         await prisma.$transaction(async (tx) => {
             const dbTrackingCompany = await tx.trackingCompany.create({
                 data: {

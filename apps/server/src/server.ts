@@ -8,6 +8,9 @@ import routes from "./routes";
 import { startJobExecutor } from "@prompt-lens/scraper";
 import { startAnalyticsRunner } from "@prompt-lens/analytics";
 import { startBrandEnricher } from "@prompt-lens/brands";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { createContext } from "@prompt-lens/api/context";
+import { appRouter } from "@prompt-lens/api/routers/index"
 
 export function createServer() {
     const app = express();
@@ -39,9 +42,14 @@ export function createServer() {
         });
     });
 
-    startJobExecutor(2);
+    app.use("/trpc", createExpressMiddleware({
+        router: appRouter,
+        createContext,
+    }))
+
+    // startJobExecutor(2);
     startAnalyticsRunner(3);
-    startBrandEnricher(10);
+    // startBrandEnricher(10);
 
     console.log("Background services started");
 

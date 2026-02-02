@@ -1,6 +1,6 @@
 import { neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
-import { env } from "@prompt-lens/env/server";
+import { env } from "@prompt-lens/env/shared";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 import ws from "ws";
